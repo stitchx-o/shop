@@ -2,7 +2,7 @@
 const statesList = [
     "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Bejaia", "Biskra", "Bechar", 
     "Blida", "Bouira", "Tamanrasset", "Tebessa", "Tlemcen", "Tiaret", "Tizi Ouzou", "Alger", 
-    "Djelfa", "Jijel", "Setif", "Saida", "Skikda", "Sidi Bel Abbes","Annaba","Guelma", "Constantine", 
+    "Djelfa", "Jijel", "Setif", "Saida", "Skikda", "Sidi Bel Abbes", "Guelma","Annaba", "Constantine", 
     "Medea", "Mostaganem", "M'Sila", "Mascara", "Ouargla", "Oran", "El Bayadh", "Illizi", 
     "Bordj Bou Arreridj", "Boumerdes", "El Tarf", "Tindouf", "Tissemsilt", "El Oued", 
     "Khenchela", "Souk Ahras", "Tipaza", "Mila", "Ain Defla", "Naama", "Ain Temouchent", 
@@ -33,7 +33,6 @@ const communesData = {
     "Saida": ["Saida", "Ain El Hadjar", "Sidi Ahmed", "Moulay Larbi", "Youb", "Hounet", "Sidi Amar", "Sidi Boubekeur", "El Hassasna", "Ain Sekhouna", "Ouled Brahim", "Tircine", "Ouled Khaled", "Maamora", "Sidi Khlifa"],
     "Skikda": ["Skikda", "Ain Zouit", "El Hadaiek", "Bouchtata", "Hamadi Krouma", "Filfila", "Ben Azzouz", "Bekkouche Lakhdar", "Es Sebt", "Ain Kechra", "Oultene", "Harroucha", "Medjez Dchiche", "Salah Bouchaour", "El Ghedir", "Ramdane Djamel", "Bin El Ouidane", "Collo", "Cheraia", "Kerkera", "Ouled Attia", "Oued Zhour", "Zitouna", "El Marsa", "Azzaba", "Djendel Saadi Mohamed", "Ain Cherchar", "Oum Toub", "Sidi Mezghiche", "Tamalous", "Ain Bouziane", "Beni Zid", "Beni Oulbane"],
     "Sidi Bel Abbes": ["Sidi Bel Abbes", "Tessala", "Sidi Brahim", "Mostefa Ben Brahim", "Telagh", "Mezaourou", "Dhaya", "Ain El Berd", "Sidi Ali Benyoub", "Sidi Yacoub", "Sidi Lahcene", "Lamtar", "Sidi Khaled", "Boukhanafis", "Tabia", "Badredine El Mokrani", "Sehala Thaoura", "Tilmouni", "Sidi Hamadouche", "Sidi Chaib", "Makedra", "Ain Thrid", "Sehailia", "Tenira", "Benachiba Chelia", "Zerouala", "Merine", "Oued Taourira", "Teghalimet", "Belarbi", "Sfisef", "Boudjebaa El Bordj", "Ain Adden", "Sidi Daho des Zairs", "Amarnas", "Hassi Zahana", "Hassi Dahou", "Oued Sefioun"],
-    "Annaba": ["Annaba", "Berrahal", "El Hadjar", "Eulma", "El Bouni", "Sidi Amar", "Chetaibi", "Seraidi", "Ain Berda", "Cheurfa", "Oued El Aneb", "Tréat"],
     "Guelma": ["Guelma", "Nechmaya", "Bouati Mahmoud", "Oued Zenati", "Tamlouka", "Ras El Agba", "Ain Makhlouf", "Ain Larbi", "Ain Sandel", "Bou Hachana", "Medjez Sfa", "Bouchegouf", "Mashroha", "Ain Ben Beida", "Guelaat Bou Sbaa", "Boumahra Ahmed", "Hammam Debagh", "Roknia", "Dahouara", "Hammam N'Bail", "Belkheir", "Beni Mezline", "Medjez Amar", "Houari Boumediene"],
     "Constantine": ["Constantine", "Hamma Bouziane", "Didouche Mourad", "Zighoud Youcef", "Khroub", "Ain Abid", "Ouled Rahmoune", "Ain Smara", "Beni Hamidane", "Ibn Ziad", "Messaoud Boudjeriou"],
     "Medea": ["Medea", "Ouzera", "Tamesguida", "Ouled Hellal", "Sidi Naamane", "Khams Djouamaa", "Derrag", "Chahbounia", "Boughezoul", "El Ouardania", "Hannacha", "Ouled Bouachra", "Sedraya", "Seghouane", "Mezerana", "Ouled Maaref", "Ain Boucif", "Kef Lakhdar", "Sidi Damed", "Souagui", "Ksar El Boukhari", "Moudjbar", "Ouled Antar", "Djouab", "Sidi Zahar", "Sidi Ziane", "El Azizia", "Mghane", "Bir Ben Laabed", "Baata", "Sidi Rebia", "Beni Slimane", "Bouskene", "Ouled Brahim", "Tablat", "El Omaria", "Ouled Deide", "Damiat", "Oum El Djalil", "Aziz", "Saneg", "Tlatet Douair", "Zoubiria", "Si Mahdjoub", "Bouaiche", "Ouedane", "Berrouaghia", "Rebaia", "El Hamdania", "Oued Harbil"],
@@ -93,7 +92,7 @@ const deliveryData = {
     'Tamanrasset': { home: 1550, office: 1300 }
 };
 
-// العناصر البرمجية
+// 4. متغيرات العناصر
 const stateInput = document.getElementById('state');
 const communeInput = document.getElementById('commune');
 const qtyInput = document.getElementById('quantity');
@@ -102,20 +101,20 @@ const couponInput = document.getElementById('couponCode');
 const sizeOpts = document.querySelectorAll('.size-option');
 let selectedSize = '';
 
-// تعبئة قائمة الولايات عند التحميل
+// تهيئة الولايات
 function initStates() {
     if (!stateInput) return;
     stateInput.innerHTML = '<option value="">Select Wilaya</option>';
-    statesList.forEach((state, index) => {
+    statesList.forEach((state) => {
         let opt = document.createElement('option');
         opt.value = state;
-        opt.textContent = `${index + 1} - ${state}`;
+        opt.textContent = state;
         stateInput.appendChild(opt);
     });
 }
 initStates();
 
-// الانتقال من البطاقة إلى نموذج الطلب
+// التفاعل مع بطاقة المنتج
 const productCard = document.getElementById('productCard');
 if (productCard) {
     productCard.onclick = () => {
@@ -126,7 +125,7 @@ if (productCard) {
     };
 }
 
-// معالجة اختيار المقاس
+// اختيار المقاس
 sizeOpts.forEach(opt => {
     opt.onclick = () => {
         sizeOpts.forEach(s => s.classList.remove('selected'));
@@ -140,7 +139,6 @@ if (stateInput) {
     stateInput.onchange = () => {
         const state = stateInput.value;
         communeInput.innerHTML = '<option value="">Select Commune</option>';
-        
         if(communesData[state]) {
             communesData[state].forEach(c => {
                 let o = document.createElement('option'); 
@@ -148,69 +146,71 @@ if (stateInput) {
                 o.textContent = c;
                 communeInput.appendChild(o);
             });
-        } else if (state !== "") {
-            let o = document.createElement('option');
-            o.value = "Centre Ville"; o.textContent = "Centre Ville";
+        } else {
+            // خيار احتياطي في حال عدم وجود بيانات البلدية للولاية المختارة
+            let o = document.createElement('option'); 
+            o.value = "Default"; 
+            o.textContent = "Centre Ville";
             communeInput.appendChild(o);
         }
         calculate();
     };
 }
 
-// دالة حساب السعر الإجمالي والشحن
+// حساب السعر الإجمالي
 function calculate() {
     const qty = parseInt(qtyInput.value) || 1;
     const state = stateInput.value;
     const type = delInput.value;
     const coupon = couponInput.value.trim().toLowerCase();
-
+    
     let productPrice = qty * 2700;
     
-    // منطق خصم الكمية (الجملة)
-    const bulkMsg = document.getElementById('bulkDiscountMsg');
+    // خصم الكمية (أكثر من قطعتين)
     if(qty >= 2) {
         productPrice -= 500;
-        if (bulkMsg) bulkMsg.style.display = 'block';
+        document.getElementById('bulkDiscountMsg').style.display = 'block';
     } else {
-        if (bulkMsg) bulkMsg.style.display = 'none';
+        document.getElementById('bulkDiscountMsg').style.display = 'none';
     }
 
-    // منطق الكوبون
-    const couponMsg = document.getElementById('couponDiscountMsg');
+    // خصم الكوبون
     if(coupon === 'stitchx') {
         productPrice -= 200;
-        if (couponMsg) couponMsg.style.display = 'block';
+        document.getElementById('couponDiscountMsg').style.display = 'block';
     } else {
-        if (couponMsg) couponMsg.style.display = 'none';
+        document.getElementById('couponDiscountMsg').style.display = 'none';
     }
 
-    // حساب سعر الشحن
+    // حساب الشحن
     let delPrice = 0;
     if(state && type && deliveryData[state]) {
         delPrice = deliveryData[state][type];
+    } else if (state && type) {
+        delPrice = 800; // سعر شحن افتراضي للولايات البعيدة
     }
 
-    const delPriceEl = document.getElementById('delPrice');
-    const finalPriceEl = document.getElementById('finalPrice');
-    
-    if (delPriceEl) delPriceEl.textContent = delPrice;
-    if (finalPriceEl) finalPriceEl.textContent = productPrice + delPrice;
+    document.getElementById('delPrice').textContent = delPrice;
+    document.getElementById('finalPrice').textContent = productPrice + delPrice;
 }
 
-// ربط أحداث الإدخال بالحساب التلقائي
 [qtyInput, delInput, couponInput].forEach(el => {
     if (el) el.oninput = calculate;
 });
 
-// تأكيد الطلب والتحقق من الحقول
+// إرسال البيانات إلى Google Sheets
 const confirmBtn = document.getElementById('confirmBtn');
 if (confirmBtn) {
     confirmBtn.onclick = () => {
         const name = document.getElementById('fullName').value;
         const phone = document.getElementById('phone').value;
+        const state = stateInput.value;
+        const commune = communeInput.value;
+        const deliveryType = delInput.value;
+        const finalPrice = document.getElementById('finalPrice').textContent;
         const err = document.getElementById('errorMessage');
 
-        if(!selectedSize || !name || !phone || !stateInput.value || !communeInput.value || !delInput.value) {
+        if(!selectedSize || !name || !phone || !state || !commune || !deliveryType) {
             if (err) {
                 err.textContent = "Please fill all fields!";
                 err.style.display = 'block';
@@ -218,14 +218,39 @@ if (confirmBtn) {
             return;
         }
 
-        // إخفاء النموذج وإظهار صفحة النجاح
-        document.getElementById('orderDetails').style.display = 'none';
-        document.getElementById('successPage').style.display = 'block';
-        document.getElementById('displayUserName').textContent = name;
-        document.getElementById('displayPhone').textContent = phone;
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = "Processing...";
+
+        const orderData = {
+            fullName: name,
+            phone: phone,
+            size: selectedSize,
+            quantity: qtyInput.value,
+            state: state,
+            commune: commune,
+            deliveryType: deliveryType,
+            totalPrice: finalPrice
+        };
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxms8GgrOAMpE31yXIfLoZDVoApAPJXUub1xc9hoWBJ2JsduNwVqgziugOlx2ouGVNg/exec';
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(orderData)
+        })
+        .then(() => {
+            // إظهار صفحة النجاح
+            document.getElementById('orderDetails').style.display = 'none';
+            document.getElementById('successPage').style.display = 'block';
+            document.getElementById('displayUserName').textContent = name;
+            document.getElementById('displayPhone').textContent = phone;
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = "CONFIRM ORDER";
+            alert("Error sending order. Please try again.");
+        });
     };
 }
-
-
-
-
