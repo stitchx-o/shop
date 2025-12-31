@@ -2,7 +2,7 @@
 const statesList = [
     "Adrar", "Chlef", "Laghouat", "Oum El Bouaghi", "Batna", "Bejaia", "Biskra", "Bechar", 
     "Blida", "Bouira", "Tamanrasset", "Tebessa", "Tlemcen", "Tiaret", "Tizi Ouzou", "Alger", 
-    "Djelfa", "Jijel", "Setif", "Saida", "Skikda", "Sidi Bel Abbes", "Guelma", "Constantine", 
+    "Djelfa", "Jijel", "Setif", "Saida", "Skikda", "Sidi Bel Abbes", "Guelma","Annaba", "Constantine", 
     "Medea", "Mostaganem", "M'Sila", "Mascara", "Ouargla", "Oran", "El Bayadh", "Illizi", 
     "Bordj Bou Arreridj", "Boumerdes", "El Tarf", "Tindouf", "Tissemsilt", "El Oued", 
     "Khenchela", "Souk Ahras", "Tipaza", "Mila", "Ain Defla", "Naama", "Ain Temouchent", 
@@ -88,7 +88,7 @@ const deliveryData = {
     'El Bayadh': { home: 1350, office: 900 }, 'Bechar': { home: 1350, office: 900 }, 
     'Adrar': { home: 1350, office: 900 }, 'In Salah': { home: 1500, office: 1250 }, 
     'In Guezzam': { home: 1500, office: 1250 }, 'Djanet': { home: 1500, office: 1250 }, 
-    'Tindouf': { home: 1550, office: 1300 }, 'Illizi': { home: 1550, office: 1300 }, 
+    'Tindouf': { home: 1550, office: 1300 },'Annaba': { home: 700, office: 400 }, 'Illizi': { home: 1550, office: 1300 }, 
     'Tamanrasset': { home: 1550, office: 1300 }
 };
 
@@ -224,3 +224,4 @@ if (confirmBtn) {
         document.getElementById('displayPhone').textContent = phone;
     };
 }
+
