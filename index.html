@@ -1,9 +1,172 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>موقعي</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StitchX Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>الموقع شغال ✅</h1>
+
+    <div class="product-card-section fade-in" id="productCard">
+        <div class="special-offer-badge">SPECIAL<br>OFFER</div>
+        <img src="il_1140xN.6630581491_e4n3.jpg" alt="Product">
+        <div class="product-title">Van Gogh Hoodie</div>
+        <div class="price-container">
+            <span class="old-price">3700 DZD</span>
+            <span class="new-price">2700 DZD</span>
+        </div>
+        <button class="view-details-btn">VIEW DETAILS</button>
+    </div>
+
+    <div class="container order-details-section" id="orderDetails">
+        <div class="product-image-section">
+            <img src="il_1140xN.6630581491_e4n3.jpg" alt="Product">
+        </div>
+        
+        <div class="product-details-section">
+            <div class="big-offer-title">BIG OFFER</div>
+            <div class="promo-banner">BUY 2 + SAVE 500 DZD INSTANTLY!</div>
+
+            <div class="price-section">
+                <span class="old-price">3700 DZD</span>
+                <span class="new-price">2700 DZD</span>
+            </div>
+
+            <div id="errorMessage" class="error-msg"></div>
+
+            <div class="form-group">
+                <label>Size:</label>
+                <div class="size-options">
+                    <div class="size-option" data-size="S">S</div>
+                    <div class="size-option" data-size="M">M</div>
+                    <div class="size-option" data-size="L">L</div>
+                    <div class="size-option" data-size="XL">XL</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity:</label>
+                <input type="number" id="quantity" value="1" min="1">
+            </div>
+
+            <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="fullName" placeholder="Your Name">
+            </div>
+
+            <div class="form-group">
+                <label>Wilaya:</label>
+                <select id="state">
+                    <option value="">Select Wilaya</option>
+                    <option value="Adrar">01 - Adrar</option>
+                    <option value="Chlef">02 - Chlef</option>
+                    <option value="Laghouat">03 - Laghouat</option>
+                    <option value="Oum El Bouaghi">04 - Oum El Bouaghi</option>
+                    <option value="Batna">05 - Batna</option>
+                    <option value="Béjaïa">06 - Béjaïa</option>
+                    <option value="Biskra">07 - Biskra</option>
+                    <option value="Béchar">08 - Béchar</option>
+                    <option value="Blida">09 - Blida</option>
+                    <option value="Bouira">10 - Bouira</option>
+                    <option value="Tamanrasset">11 - Tamanrasset</option>
+                    <option value="Tébessa">12 - Tébessa</option>
+                    <option value="Tlemcen">13 - Tlemcen</option>
+                    <option value="Tiaret">14 - Tiaret</option>
+                    <option value="Tizi Ouzou">15 - Tizi Ouzou</option>
+                    <option value="Alger">16 - Alger</option>
+                    <option value="Djelfa">17 - Djelfa</option>
+                    <option value="Jijel">18 - Jijel</option>
+                    <option value="Sétif">19 - Sétif</option>
+                    <option value="Saïda">20 - Saïda</option>
+                    <option value="Skikda">21 - Skikda</option>
+                    <option value="Sidi Bel Abbès">22 - Sidi Bel Abbès</option>
+                    <option value="Annaba">23 - Annaba</option>
+                    <option value="Guelma">24 - Guelma</option>
+                    <option value="Constantine">25 - Constantine</option>
+                    <option value="Médéa">26 - Médéa</option>
+                    <option value="Mostaganem">27 - Mostaganem</option>
+                    <option value="M'Sila">28 - M'Sila</option>
+                    <option value="Mascara">29 - Mascara</option>
+                    <option value="Ouargla">30 - Ouargla</option>
+                    <option value="Oran">31 - Oran</option>
+                    <option value="El Bayadh">32 - El Bayadh</option>
+                    <option value="Illizi">33 - Illizi</option>
+                    <option value="Bordj Bou Arreridj">34 - Bordj Bou Arreridj</option>
+                    <option value="Boumerdès">35 - Boumerdès</option>
+                    <option value="El Tarf">36 - El Tarf</option>
+                    <option value="Tindouf">37 - Tindouf</option>
+                    <option value="Tissemsilt">38 - Tissemsilt</option>
+                    <option value="El Oued">39 - El Oued</option>
+                    <option value="Khenchela">40 - Khenchela</option>
+                    <option value="Souk Ahras">41 - Souk Ahras</option>
+                    <option value="Tipaza">42 - Tipaza</option>
+                    <option value="Mila">43 - Mila</option>
+                    <option value="Aïn Defla">44 - Aïn Defla</option>
+                    <option value="Naâma">45 - Naâma</option>
+                    <option value="Aïn Témouchent">46 - Aïn Témouchent</option>
+                    <option value="Ghardaïa">47 - Ghardaïa</option>
+                    <option value="Relizane">48 - Relizane</option>
+                    <option value="Timimoun">49 - Timimoun</option>
+                    <option value="Bordj Badji Mokhtar">50 - Bordj Badji Mokhtar</option>
+                    <option value="Ouled Djellal">51 - Ouled Djellal</option>
+                    <option value="Béni Abbès">52 - Béni Abbès</option>
+                    <option value="In Salah">53 - In Salah</option>
+                    <option value="In Guezzam">54 - In Guezzam</option>
+                    <option value="Touggourt">55 - Touggourt</option>
+                    <option value="Djanet">56 - Djanet</option>
+                    <option value="El M'Ghair">57 - El M'Ghair</option>
+                    <option value="El Menia">58 - El Menia</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Commune:</label>
+                <select id="commune">
+                    <option value="">Select Wilaya First</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Delivery To:</label>
+                <select id="deliveryType">
+                    <option value="">Select Type</option>
+                    <option value="office">Office (Desk)</option>
+                    <option value="home">Home Delivery</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number:</label>
+                <input type="tel" id="phone" placeholder="0XXXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label>Discount Code:</label>
+                <input type="text" id="couponCode" placeholder="Enter code">
+            </div>
+
+            <div class="price-summary">
+                <div id="bulkDiscountMsg" class="discount-label">Bulk Order Applied: -500 DZD</div>
+                <div id="couponDiscountMsg" class="discount-label">Coupon Applied: -200 DZD</div>
+                <p>Delivery: <span id="delPrice">0</span> DZD</p>
+                <p class="total-final">Total: <span id="finalPrice">2700</span> DZD</p>
+            </div>
+
+            <button class="order-btn" id="confirmBtn">CONFIRM ORDER</button>
+        </div>
+    </div>
+
+    <div id="successPage" class="success-container">
+        <div class="success-card">
+            <h1>Order Received</h1>
+            <p>Thank you <span id="displayUserName" style="color:white; font-weight:bold;"></span>. We will contact you at:</p>
+            <h2 id="displayPhone" style="font-size: 2em; margin: 20px 0;"></h2>
+            <button class="view-details-btn" onclick="location.reload()">Return</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
