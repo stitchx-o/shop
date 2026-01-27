@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StitchX Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="site-greeting visible" aria-hidden="false"><span class="greet-text">Welcome to StitchX Store</span></div>
+    <button id="backHome" class="back-btn" style="display:none" aria-label="Back to store">
+        <span class="back-icon" aria-hidden="true">‹</span>
+    </button>
+
+    <div class="cards-container">
+        <div class="product-card-section fade-in" id="productCard">
+            <div class="card-image-wrapper">
+                <div class="gallery" id="productGallery">
+                    <div class="gallery-inner" id="productGalleryInner"></div>
+                </div>
+            </div>
+            <div class="special-offer-badge">R6 Precision Hoodie</div>
+            <div class="price-container">
+                <span class="old-price">4700 DZD</span>
+                <span class="new-price">3700 DZD</span>
+            </div>
+        </div>
+
+        <div class="product-card-section fade-in" id="customCard">
+            <div class="card-image-wrapper">
+                <img src="images/yourdesign/imagebase.jpg" alt="Custom Design" class="card-image">
+            </div>
+            <div class="special-offer-badge">Create Your Style</div>
+        </div>
+    </div>
+
+    <div class="custom-product-page" id="customProductPage" style="display: none; opacity: 0;">
+        <button id="backHomeCustom" class="back-btn" aria-label="Back to store">
+            <span class="back-icon" aria-hidden="true">‹</span>
+        </button>
+        <div class="custom-product-page-container">
+            <h1 class="custom-product-title">Regular Hoodie</h1>
+            <div class="custom-product-card">
+                <div class="custom-card-image-container">
+                    <img src="images/dp1/regularhoodie.jpg" alt="Custom Design Product" class="custom-card-image">
+                </div>
+                
+                <div class="side-selector">
+                    <label>Choose Side:</label>
+                    <div class="side-options">
+                        <div class="side-option" data-side="front" title="Front">Front</div>
+                        <div class="side-option" data-side="back" title="Back">Back</div>
+                    </div>
+                </div>
+                
+                <div class="color-selector">
+                    <label>Choose Color:</label>
+                    <div class="color-options">
+                        <div class="color-option" data-color="White" data-value="white" title="White"></div>
+                        <div class="color-option" data-color="Gray" data-value="gray" title="Gray"></div>
+                        <div class="color-option" data-color="Black" data-value="black" title="Black"></div>
+                    </div>
+                </div>
+                
+                <button class="customize-btn" id="customizeBtn">Customize</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="customization-preview-page" id="customizationPreviewPage" style="display: none; opacity: 0;">
+        <button id="backCustomization" class="back-btn" aria-label="Back to customize">
+            <span class="back-icon" aria-hidden="true">‹</span>
+        </button>
+        
+        <div class="preview-wrapper">
+            <div class="preview-container">
+                <!-- Edit Panel (Left Side) -->
+                <div class="edit-panel hidden" id="editPanel">
+                    <div class="edit-panel-content">
+                        <h3>Upload Design</h3>
+                        <input type="file" id="designFileInput" accept=".png" />
+                        <label for="designFileInput" class="file-upload-btn">Upload PNG</label>
+                        <button type="button" id="deleteDesignBtn" class="delete-btn">Delete</button>
+                        <div class="design-size-readout">
+                            Size: <span id="designSizeValue">0 × 0 cm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-image-wrapper">
+                    <img src="" alt="Product Preview" id="previewImage" class="preview-image">
+                    <!-- Draggable/Resizable/Rotatable uploaded design -->
+                    <div id="designLayer" class="design-layer" style="display: none;">
+                        <img id="uploadedDesign" class="uploaded-design" />
+                        <span class="resize-handle handle-tl"></span>
+                        <span class="resize-handle handle-tr"></span>
+                        <span class="resize-handle handle-br"></span>
+                        <span class="resize-handle handle-bl"></span>
+                        <span class="rotate-handle"></span>
+                    </div>
+                </div>
+
+                <div class="order-panel" id="customOrderPanel">
+                    <div class="product-title-section">
+                        <div class="big-offer-title">BIG OFFER</div>
+                        <div class="promo-banner">BUY 2 + SAVE 500 DZD INSTANTLY!</div>
+
+                        <div class="price-section">
+                            <span class="old-price">4700 DZD</span>
+                            <span class="new-price">2500 DZD</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Size:</label>
+                        <div class="size-options">
+                            <div class="size-option" data-size="S">S</div>
+                            <div class="size-option" data-size="M">M</div>
+                            <div class="size-option" data-size="L">L</div>
+                            <div class="size-option" data-size="XL">XL</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Color:</label>
+                        <div class="color-options">
+                            <div class="color-option" data-color="White" data-value="white" title="White"></div>
+                            <div class="color-option" data-color="Gray" data-value="gray" title="Gray"></div>
+                            <div class="color-option" data-color="Black" data-value="black" title="Black"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity:</label>
+                        <input type="number" id="customQuantity" value="1" min="1">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Full Name:</label>
+                        <input type="text" id="customFullName" placeholder="Your Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery To:</label>
+                        <select id="customDeliveryType">
+                            <option value="">Select Type</option>
+                            <option value="office">Office (Desk)</option>
+                            <option value="home">Home Delivery</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Wilaya:</label>
+                        <select id="customState">
+                            <option value="">Select Wilaya</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="customCommuneGroup" style="display: none;">
+                        <label for="customCommune">Commune:</label>
+                        <select id="customCommune">
+                            <option value="">Select Wilaya First</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="customOfficeGroup" style="display: none;">
+                        <label for="customOffice">Delivery Office:</label>
+                        <select id="customOffice">
+                            <option value="">Select Office</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number:</label>
+                        <input type="tel" id="customPhone" placeholder="0XXXXXXXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Discount Code:</label>
+                        <input type="text" id="customCouponCode" placeholder="Enter code">
+                    </div>
+
+                    <div class="price-summary">
+                        <div id="customBulkDiscountMsg" class="discount-label">Bulk Order Applied: -500 DZD</div>
+                        <div id="customCouponDiscountMsg" class="discount-label">Coupon Applied: -200 DZD</div>
+                        <p>Delivery: <span id="customDelPrice">0</span> DZD</p>
+                        <p class="total-final">Total: <span id="customFinalPrice">2500</span> DZD</p>
+                    </div>
+
+                    <button class="order-btn" id="customConfirmBtn">CONFIRM</button>
+                </div>
+                <div class="preview-controls">
+                    <button id="editBtn" class="edit-btn">Edit</button>
+                    <button id="saveBtn" class="save-btn" style="display: none;">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container order-details-section" id="orderDetails">
+        <div class="product-image-section">
+            <div class="gallery" id="productDetailGallery">
+                <button class="gallery-btn prev" id="detailPrev">&#10094;</button>
+                <div class="gallery-inner" id="productDetailGalleryInner"></div>
+                <button class="gallery-btn next" id="detailNext">&#10095;</button>
+            </div>
+        </div>
+        
+        <div class="product-details-section">
+                <div class="product-title-section">
+                    <div class="big-offer-title">BIG OFFER</div>
+                    <div class="promo-banner">BUY 2 + SAVE 500 DZD INSTANTLY!</div>
+
+                    <div class="price-section">
+                        <span class="old-price">4700 DZD</span>
+                        <span class="new-price">3700 DZD</span>
+                    </div>
+
+            <div id="errorMessage" class="error-msg"></div>
+
+            <div class="form-group">
+                <label>Size:</label>
+                <div class="size-options">
+                    <div class="size-option" data-size="S">S</div>
+                    <div class="size-option" data-size="M">M</div>
+                    <div class="size-option" data-size="L">L</div>
+                    <div class="size-option" data-size="XL">XL</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Color:</label>
+                <div class="color-options">
+                    <div class="color-option" data-color="White" data-value="white" title="White"></div>
+                    <div class="color-option" data-color="Gray" data-value="gray" title="Gray"></div>
+                    <div class="color-option" data-color="Black" data-value="black" title="Black"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Quantity:</label>
+                <input type="number" id="quantity" value="1" min="1">
+            </div>
+
+            <div class="form-group">
+                <label>Full Name:</label>
+                <input type="text" id="fullName" placeholder="Your Name">
+            </div>
+
+            <div class="form-group">
+                <label>Delivery To:</label>
+                <select id="deliveryType">
+                    <option value="">Select Type</option>
+                    <option value="office">Office (Desk)</option>
+                    <option value="home">Home Delivery</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Wilaya:</label>
+                <select id="state">
+                    <option value="">Select Wilaya</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="communeGroup" style="display: none;">
+                <label for="commune">Commune:</label>
+                <select id="commune">
+                    <option value="">Select Wilaya First</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="officeGroup" style="display: none;">
+                <label for="office">Delivery Office:</label>
+                <select id="office">
+                    <option value="">Select Office</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number:</label>
+                <input type="tel" id="phone" placeholder="0XXXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label>Discount Code:</label>
+                <input type="text" id="couponCode" placeholder="Enter code">
+            </div>
+
+            <div class="price-summary">
+                <div id="bulkDiscountMsg" class="discount-label">Bulk Order Applied: -500 DZD</div>
+                <div id="couponDiscountMsg" class="discount-label">Coupon Applied: -200 DZD</div>
+                <p>Delivery: <span id="delPrice">0</span> DZD</p>
+                <p class="total-final">Total: <span id="finalPrice">3700</span> DZD</p>
+            </div>
+
+            <button class="order-btn" id="confirmBtn">CONFIRM ORDER</button>
+        </div>
+    </div>
+
+    <div class="order-details-section" id="customDesignSection" style="display: none; opacity: 0;">
+        <div style="width: 100%; padding: 40px; text-align: center;">
+            <div style="font-size: 2.5em; font-weight: 900; margin-bottom: 40px; color: var(--text-color);">Your Custom Design</div>
+            
+            <div class="custom-product-card">
+                <div class="custom-card-image-container">
+                    <img src="images/dp1/regularhoodie.jpg" alt="Custom Design Product" class="custom-card-image">
+                </div>
+                <button class="customize-btn" id="customizeBtn">Customize</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successPage" class="success-container">
+        <div class="success-card">
+            <h1>Order Received</h1>
+            <p>Thank you <span id="displayUserName" style="color:white; font-weight:bold;"></span>. We will contact you at:</p>
+            <h2 id="displayPhone" style="font-size: 2em; margin: 20px 0;"></h2>
+            <button class="view-details-btn" onclick="location.reload()">Return</button>
+        </div>
+    </div>
+
+        <script>
+                // Inline fallback data to ensure dropdowns work even when fetch() fails (file://)
+                window.__dynamicData = {
+  "states": [
+    { "code": 1, "name": "Adrar" }, { "code": 2, "name": "Chlef" }, { "code": 3, "name": "Laghouat" }, 
+    { "code": 4, "name": "Oum El Bouaghi" }, { "code": 5, "name": "Batna" }, { "code": 6, "name": "Béjaïa" },
+    { "code": 7, "name": "Biskra" }, { "code": 8, "name": "Béchar" }, { "code": 9, "name": "Blida" },
+    { "code": 10, "name": "Bouïra" }, { "code": 11, "name": "Tamanrasset" }, { "code": 12, "name": "Tébessa" },
+    { "code": 13, "name": "Tlemcen" }, { "code": 14, "name": "Tiaret" }, { "code": 15, "name": "Tizi Ouzou" },
+    { "code": 16, "name": "Alger" }, { "code": 17, "name": "Djelfa" }, { "code": 18, "name": "Jijel" },
+    { "code": 19, "name": "Sétif" }, { "code": 20, "name": "Saïda" }, { "code": 21, "name": "Skikda" },
+    { "code": 22, "name": "Sidi Bel Abbès" }, { "code": 23, "name": "Annaba" }, { "code": 24, "name": "Guelma" },
+    { "code": 25, "name": "Constantine" }, { "code": 26, "name": "Médéa" }, { "code": 27, "name": "Mostaganem" },
+    { "code": 28, "name": "M'Sila" }, { "code": 29, "name": "Mascara" }, { "code": 30, "name": "Ouargla" },
+    { "code": 31, "name": "Oran" }, { "code": 32, "name": "El Bayadh" }, { "code": 33, "name": "Illizi" },
+    { "code": 34, "name": "Bordj Bou Arréridj" }, { "code": 35, "name": "Boumerdès" }, { "code": 36, "name": "El Tarf" },
+    { "code": 37, "name": "Tindouf" }, { "code": 38, "name": "Tissemsilt" }, { "code": 39, "name": "El Oued" },
+    { "code": 40, "name": "Khenchela" }, { "code": 41, "name": "Souk Ahras" }, { "code": 42, "name": "Tipaza" },
+    { "code": 43, "name": "Mila" }, { "code": 44, "name": "Aïn Defla" }, { "code": 45, "name": "Naâma" },
+    { "code": 46, "name": "Aïn Témouchent" }, { "code": 47, "name": "Ghardaïa" }, { "code": 48, "name": "Relizane" },
+    { "code": 49, "name": "Timimoun" }, { "code": 50, "name": "Bordj Badji Mokhtar" }, { "code": 51, "name": "Ouled Djellal" },
+    { "code": 52, "name": "Béni Abbès" }, { "code": 53, "name": "Aïn Salah" }, { "code": 54, "name": "Aïn Guezzam" },
+    { "code": 55, "name": "Touggourt" }, { "code": 56, "name": "Djanet" }, { "code": 57, "name": "El M'Ghair" },
+    { "code": 58, "name": "El Meniaa" }, { "code": 59, "name": "Aflou" }, { "code": 60, "name": "Barika" },
+    { "code": 61, "name": "Ksar Chellala" }, { "code": 62, "name": "Messaad" }, { "code": 63, "name": "Aïn Oussera" },
+    { "code": 64, "name": "Boussaâda" }, { "code": 65, "name": "El Abiodh Sidi Cheikh" }, { "code": 66, "name": "El Kantara" },
+    { "code": 67, "name": "Bir El Ater" }, { "code": 68, "name": "Ksar El Boukhari" }, { "code": 69, "name": "El Aricha" }
+  ],
+  "communes": {
+    "Adrar": ["Adrar", "Tamest", "Charouine", "Reggane", "In Zghmir", "Tit", "Tsabit", "Timimoun", "Ouled Said", "Zaouiet Kounta", "Aoulef", "Timokten", "Tamentit", "Fenoughil", "Tinerkouk", "Deldoul", "Sali", "Akabli", "Metarfa", "Ouled Ahmed Timmi", "Bouda", "Aougrout", "Talmine", "Bordj Badji Mokhtar", "Sbaa", "Ouled Aissa", "Ksar Kaddour"],
+    "Chlef": ["Chlef", "Tenes", "Benairia", "El Karimia", "Tadjena", "Taougrite", "Beni Haoua", "Sobha", "Harchoun", "Ouled Fares", "Sidi Akkacha", "Boukadir", "Beni Rached", "Talassa", "Heraren", "Oued Goussine", "Dahra", "Ouled Abbes", "Sendjas", "Sidi Abderrahmane", "Oued Fodda", "Ouled Ben Abdelkader", "Bouzghaia", "Ain Merane", "Oum Drou", "Breira", "Moussadek", "El Hadjadj", "Labiod Medjadja", "Oued Sly", "Medjadja"],
+    "Laghouat": ["Laghouat", "Ksar El Hirane", "Bennasser Benchohra", "Sidi Makhlouf", "Hassi Delaa", "Hassi R'mel", "Ain Madhi", "Tadjemout", "Kheneg", "Tadjrouna", "El Assafia", "Sidi Bouzid"],
+    "Oum El Bouaghi": ["Oum El Bouaghi", "Ain Beida", "Ain M'lila", "Behir Chergui", "El Amiria", "Sigus", "El Belala", "Ain Babouche", "Berriche", "Ouled Hamla", "Dhalaa", "Ain Kercha", "Hanchir Toumgani", "Fkirina", "Oued Nini", "Meskiana", "Dhir", "Ain Fekroun", "Rahia", "Ain Zitoun", "Ouled Gacem", "Ouled Zouai", "Souk Naamane", "Zorg"],
+    "Batna": ["Batna", "Ghassira", "Maafa", "Menaa", "Seriana", "Tighghar", "Ain Yagout", "Amdoukal", "N'gaous", "Sefiane", "Boulhilat", "Chemora", "Echrana", "Oued El Ma", "Oued Taga", "Arris", "Kimmel", "Tighanimine", "Larbaa", "Bouzina", "Fesdis", "Oued Chaaba", "Taxlent", "Gosbat", "Guigba", "Teniet El Abed", "Hidoussa", "Rahbat", "Barika", "Metkaouak", "Kimel", "N'douhal", "Ras El Aioun", "Oulad Si Slimane", "Lemcen", "Talkhamt", "Bouchetagne", "Lemsane", "Ksar Bellezma", "Ouldja"],
+    "Béjaïa": ["Béjaïa", "Amizour", "Feraoun", "Taourirt Ighil", "Chellata", "Tamokra", "Timzrit", "Souk El Tenine", "Melbou", "Oued Ghir", "Tala Hamza", "Barbacha", "Beni Djellil", "Beni Maouche", "Sidi Ayad", "Smaoun", "Kendira", "Tifra", "Sidi Aich", "Leflaye", "Akbou", "Ouzellaguen", "Ighram", "Chemini", "Souamar", "Toudja", "Kherrata", "Draa El Kaid", "Beni Ksila", "Beni Mallikeche", "Boudjellil", "Adekar", "Akfadou", "Tinebdar", "El Kseur", "Fenaia Ilmaten"],
+    "Biskra": ["Biskra", "Oumache", "Chetma", "Ouled Djellal", "Ras El Miaad", "Besbes", "Sidi Khaled", "Doucen", "Ech Chaiba", "Sidi Okba", "M'chouneche", "El Haouch", "Zeribet El Oued", "El Feidh", "Djemorah", "Foughala", "El Ghrous", "M'lili", "Tolga", "Bouchagroune", "Mekhadma", "Khouled"],
+    "Béchar": ["Béchar", "Abadla", "Taghit", "El Ouata", "Béni Abbès", "Kerzaz", "Igli", "Tabelbala", "Ouled Khoudir", "Lahmar", "Mougheul", "Kenadsa", "Meridja", "Timoudi", "Beni Ikhlef", "Ksabi", "Mechraa Houari Boumediene", "Beni Ounif"],
+    "Blida": ["Blida", "Chebli", "Bouinan", "Oued El Alleug", "Ouled Yaich", "Chrea", "El Affroun", "Mouzaia", "Hammam Melouane", "Bougara", "Souhane", "Larbaa", "Soumaa", "Guerrouaou", "Boufarik", "Meftah", "Benkhelil", "Beni Mered", "Ouled Slama", "Sidi Moussa"],
+    "Bouïra": ["Bouira", "El Asnam", "Guerrouma", "Souk El Khemis", "Kadiria", "Hanif", "Dirah", "Ait Laaziz", "Taghzout", "Raouraoua", "Mezdour", "Haizer", "Lakhdaria", "Maala", "El Hachimia", "Sour El Ghozlane", "Maamora", "Dechmia", "Ridane", "Bechloul", "Bouderbala", "Aghbalou", "Ain Turk", "Saharidj", "El Adjiba", "Ahl El ksar", "Boukram", "Zbarbar", "Ain El Hadjar", "Taguedit", "Ath Mansour"],
+    "Tamanrasset": ["Tamanrasset", "Abalessa", "In Ghar", "Ain Salah", "Idles", "Tazrouk", "In Amguel", "Foggaret Ezzaouia", "Ain Guezzam", "Tin Zaouatine"],
+    "Tébessa": ["Tébessa", "Cheria", "Stah Guentis", "El Hammamet", "Bedjene", "Ouenza", "El Meridj", "Aïn Zerga", "Morsott", "Bir Dheb", "Bir Mokkadem", "Guorriguer", "Bekkaria", "Boukhadra", "El Kouif", "M'douhal", "Boulhaf Dir"],
+    "Tlemcen": ["Tlemcen", "Beni Mester", "Ain Tallout", "Remchi", "El Feuilla", "Sabra", "Ghazaouet", "Souani", "Djebala", "Beni Snous", "Bensekrane", "Fellaoucene", "Azails", "Maghnia", "Hammam Boughrara", "Zenata", "Souahlia", "Nedroma", "Beni Bahdel", "Beni Ouarsous", "Honaine", "Sidi Medjahed", "Amieur", "Ain Fezza", "Hennaya", "Chetouane", "Mansourah", "Beni Khellad", "Souk Thleta", "Terny Beni Hediel"],
+    "Tiaret": ["Tiaret", "Medroussa", "Oued Lilli", "Sidi Hosni", "Ain El Hadid", "Mechraa Safa", "Tidda", "Naima", "Meghila", "Guertoufa", "Sidi Bakhti", "Sidi Ali Mellal", "Ain Deheb", "Chehaima", "Sidi Abderrahmane", "Madna", "Mahdia", "Ain Zarit", "Sebaine", "Faidja", "Si Abdelghani", "Sougueur", "Tousnina", "Dahmouni", "Rahouia"],
+    "Tizi Ouzou": ["Tizi Ouzou", "Ain El Hammam", "Akbil", "Abi Youcef", "Ait Yahia", "Iferhounene", "Bouzeguene", "Azazga", "Illoula Oumalou", "Yakouren", "Larbaa Nath Irathen", "Tizi Rached", "Irdjen", "Azeffoun", "Iflissen", "Tigzirt", "Ait Aissa Mimoun", "Ouaguenoun", "Timizart", "Maatkas", "Souk El Tenine", "Draa Ben Khedda", "Tizi Gheniff", "Ait Yahia Moussa", "Draa El Mizan", "Frikat", "Ait Kouffi", "Mekla", "Ait Khellili", "Souamaa", "Beni Yenni", "Iboudraren", "Ouacif", "Ait Toudert", "Ait Boumahdi", "Beni Douala", "Beni Aissa", "Beni Zmenzer", "Idjeur", "Ait Aggouacha", "Imsouhal", "Ait Oumalou", "Ait Bouaddou", "Illilten", "Zekri", "Mizrana", "Tizi N'Tleta"],
+    "Alger": ["Alger Centre", "Madania", "Belouizdad", "Bab El Oued", "Bologhine", "Casbah", "Oued Koriche", "Bir Mourad Rais", "Birmandreis", "Hydra", "El Biar", "Bouzareah", "Ben Aknoun", "El Mouradia", "Beni Messous", "Kouba", "Bachidjerrah", "El Harrach", "Bourouba", "Mahelma", "Sidi Abdellah", "Zeralda", "Staoueli", "Ain Benian", "Hammamet", "Cheraga", "Ouled Fayet", "Dely Ibrahim", "Draria", "Saoula", "Baba Hassen", "Douera", "Khraicia", "Birtouta", "Tessala El Merdja", "Ouled Chebel", "Sidi Moussa", "Ain Taya", "Bordj El Kiffan", "Marsa", "Bab Ezzouar", "Reghaia", "Rouiba", "Herraoua", "Baraki", "Eucalyptus", "Sidi M'hamed", "Bordj El Bahri", "El Magharia", "Hussein Dey", "Mohammadia", "Oued Smar"],
+    "Djelfa": ["Djelfa", "Moudjebara", "El Khedid", "Hassi Bahbah", "Ain Maabed", "Sidi Baizid", "M'liliha", "Dar Chioukh", "Taadmit", "Ain Fekka", "Ain Chouhada", "Zakkar", "Douis", "Guattara", "Charef", "Benyagoub"],
+    "Jijel": ["Jijel", "Erraguene", "El Aouana", "Ziama Mansouriah", "Taher", "Emir Abdelkader", "Chekfa", "Chahna", "El Kennar Nouchfi", "Sidi Abdelaziz", "El Ancer", "Boucif Ouled Askeur", "Djemaa Beni Habibi", "Bouraoui Belhadef", "El Milia", "Settara", "Sidi Maarouf", "Ouled Yahia Khadrouch", "Ouled Rabah", "Boussiaba", "Ghebala", "Boudriaa Ben Yadjis", "Djimla", "Kaous", "Texenna", "Ouadjana"],
+    "Sétif": ["Setif", "Ain Abessa", "Ain Arnat", "Ain Azal", "Ain El Kebira", "Ain Lahdjar", "Ain Oulmene", "Ain Roua", "Ain Sebt", "Babor", "Bazer Sakhra", "Beidha Bordj", "Bellaa", "Beni Aziz", "Beni Chebana", "Beni Fouda", "Beni Hocine", "Beni Mouli", "Beni Ouerthilane", "Bir El Arch", "Bir Haddada", "Bouandas", "Bougaa", "Bousselam", "Djemila", "Draa Kebila", "El Eulma", "El Ouldja", "Guellal", "Guelta Zerka", "Guenzet", "Guidjel", "Hamma", "Hammam Guergour", "Hammam Souhna", "Harbil", "Ksar El Abtal", "Maouia", "Malaako", "Mezloug", "Oued El Bared", "Ouled Addouane", "Ouled Sabor", "Ouled Si Ahmed", "Ouled Tebben", "Ouricia", "Salah Bey", "Serdj El Ghoul", "Tachouda", "Tala Ifacene", "Taya", "Tizi N'Bechar", "Dahra"],
+    "Saïda": ["Saida", "Ain El Hadjar", "Sidi Ahmed", "Moulay Larbi", "Youb", "Hounet", "Sidi Amar", "Sidi Boubekeur", "El Hassasna", "Ain Sekhouna", "Ouled Brahim", "Tircine", "Ouled Khaled", "Maamora", "Sidi Khlifa"],
+    "Skikda": ["Skikda", "Ain Zouit", "El Hadaiek", "Bouchtata", "Hamadi Krouma", "Filfila", "Ben Azzouz", "Bekkouche Lakhdar", "Es Sebt", "Ain Kechra", "Oultene", "Harroucha", "Medjez Dchiche", "Salah Bouchaour", "El Ghedir", "Ramdane Djamel", "Bin El Ouidane", "Collo", "Cheraia", "Kerkera", "Ouled Attia", "Oued Zhour", "Zitouna", "El Marsa", "Azzaba", "Djendel Saadi Mohamed", "Ain Cherchar", "Oum Toub", "Sidi Mezghiche", "Tamalous", "Ain Bouziane", "Beni Zid", "Beni Oulbane"],
+    "Sidi Bel Abbès": ["Sidi Bel Abbès", "Tessala", "Sidi Brahim", "Mostefa Ben Brahim", "Telagh", "Mezaourou", "Dhaya", "Aïn El Berd", "Sidi Ali Benyoub", "Sidi Yacoub", "Sidi Lahcene", "Lamtar", "Sidi Khaled", "Boukhanafis", "Tabia", "Badredine El Mokrani", "Sehala Thaoura", "Tilmouni", "Sidi Hamadouche", "Sidi Chaib", "Makedra", "Aïn Thrid", "Sehailia", "Tenira", "Benachiba Chelia", "Zerouala", "Merine", "Oued Taourira", "Teghalimet", "Belarbi", "Sfisef", "Boudjebaa El Bordj", "Aïn Adden", "Sidi Daho des Zairs", "Amarnas", "Hassi Zahana", "Hassi Dahou", "Oued Sefioun"],
+    "Annaba": ["Annaba", "El Hadjar", "Sidi Amir", "Berrahal", "El Ancer", "Chetaibi", "Treat", "Oued El Aneb", "Seraidi", "Hor", "Bugeaud", "Edough"],
+    "Guelma": ["Guelma", "Nechmaya", "Bouati Mahmoud", "Oued Zenati", "Tamlouka", "Ras El Agba", "Ain Makhlouf", "Ain Larbi", "Ain Sandel", "Bou Hachana", "Medjez Sfa", "Bouchegouf", "Mashroha", "Ain Ben Beida", "Guelaat Bou Sbaa", "Boumahra Ahmed", "Hammam Debagh", "Roknia", "Dahouara", "Hammam N'Bail", "Belkheir", "Beni Mezline", "Medjez Amar", "Houari Boumediene"],
+    "Constantine": ["Constantine", "Hamma Bouziane", "Didouche Mourad", "Zighoud Youcef", "Khroub", "Ain Abid", "Ouled Rahmoune", "Ain Smara", "Beni Hamidane", "Ibn Ziad", "Messaoud Boudjeriou"],
+    "Médéa": ["Médéa", "Ouzera", "Tamesguida", "Ouled Hellal", "Sidi Naamane", "Khams Djouamaa", "Derrag", "El Ouardania", "Hannacha", "Ouled Bouachra", "Sedraya", "Seghouane", "Mezerana", "Ouled Maaref", "Aïn Boucif", "Kef Lakhdar", "Sidi Damed", "Souagui", "Ouled Antar", "Djouab", "Sidi Zahar", "Sidi Ziane", "El Azizia", "Mghane", "Bir Ben Laabed", "Baata", "Sidi Rebia", "Beni Slimane", "Bouskene", "Ouled Brahim", "Tablat", "El Omaria", "Ouled Deide", "Damiat", "Oum El Djalil", "Tlatet Douair", "Zoubiria", "Si Mahdjoub", "Bouaiche", "Ouedane", "Berrouaghia", "Rebaia", "El Hamdania", "Oued Harbil"],
+    "Mostaganem": ["Mostaganem", "Sayada", "Mesra", "Bouguirat", "Sirat", "Ain Sidi Cherif", "Mansourah", "Hassi Maameche", "Mazagran", "Stidia", "Foronaka", "Ain Nouissy", "Hacine", "Sour", "Oued El Kheir", "Sidi Ali", "Ouled Maallah", "Tazgait", "Sidi Lakhdar", "Hadadj", "Abdelmalek Ramdane", "Khadra", "Achaacha", "Ouled Boughalem", "Nekmaria", "Safsaf", "Souaflia"],
+    "M'Sila": ["M'Sila", "Maadid", "Hammam Dalaa", "Tarmount", "Ouled Mansour", "Ouanougha", "Ighil Ali", "Sidi Aissa", "Bouti Sayah", "Sidi Hadjeres", "Ain El Hadjel", "Sidi Ameur", "Zarzour", "Ouled Derradj", "M'tarfa", "Sidi M'hamed", "Chellal", "Ouled Addi Guebala", "Berhoum", "Dehahna", "Magra", "Baniou", "Ain Khadra", "Mohamed Boudiaf", "Slamat", "Souamaa"],
+    "Mascara": ["Mascara", "Bou Hanifia", "El Guetna", "El Hachem", "Tizi", "Froha", "Ghriss", "Matemore", "Sidi Boussaid", "Maoussa", "Sidi Kada", "Tighennif", "Sidi Abdeldjebar", "Oued Taria", "Bou Henni", "Mamounia", "Ferraguig", "El Ghomri", "Zahana", "El Gaada", "Oggaz", "Alaimia", "Ras El Ain Amirouche", "Sig", "Chorfa", "Sidi Abdelmoumen", "Mohammadia", "Mocta Douze", "Beniane", "Aouf", "Gharrous", "Ain Fekan", "Ain Fares", "Khalouia", "Hacine"],
+    "Ouargla": ["Ouargla", "Ain Beida", "Ngoussa", "Hassi Messaoud", "Rouissat", "Balidat Ameur", "Tebesbest", "Nezla", "Zaouia El Abidia", "Megarine", "Sidi Slimane", "Taibet", "El Allia", "El Hadjira", "Benaceur", "M'naguer"],
+    "Oran": ["Oran", "Gdyel", "Bir El Djir", "Hassi Bounif", "Es Senia", "Sidi Chami", "El Kerma", "Arzew", "Sidi Benyebka", "Ain El Bya", "Bethioua", "Marsat El Hadjadj", "Ain El Turk", "Mers El Kebir", "Bousfer", "El Ançor", "Oued Tlelat", "Tafraoui", "Boufatis", "Ben Freha", "Boutlelis", "Ain Kerma", "Misserghin", "Hassi Ben Okba", "Hassi Mefsoukh"],
+    "El Bayadh": ["El Bayadh", "Rogassa", "Stitten", "Ghassoul", "Boualem", "El Kheiter", "Bougtoub", "Tousmouline", "Sidi Slimane", "Sidi Tifour"],
+    "Illizi": ["Illizi", "Djanet", "Debdeb", "Bordj Omar Driss", "Bordj El Haouas", "In Amenas"],
+    "Bordj Bou Arréridj": ["Bordj Bou Arréridj", "Ras El Oued", "Bordj Zemoura", "Mansoura", "El M'hir", "Ben Daoud", "El Ach", "Ghilassa", "Taglait", "Bordj Ghedir", "Belimour", "Ouled Brahem", "Bir Kasdali", "Khelil", "Sidi Embarek", "Tixter", "Hamadia", "El Anasser", "Tesmart", "Medjana", "Teniet En Nasr", "Hasnaoua", "Ouled Dahmane", "Yeryas", "El Main", "Djaafra", "Colla"],
+    "Boumerdès": ["Boumerdès", "Boudouaou", "Afir", "Bordj Menaiel", "Baghlia", "Sidi Daoud", "Naciria", "Isser", "Zemmouri", "Si Mustapha", "Tidjelabine", "Chabet El Ameur", "Thenia", "Souk El Had", "Ouled Moussa", "Larbatache", "Khemis El Khenchna", "Hamadi", "Boudouaou El Bahri", "Taourga", "Ouled Haddadj", "Leghata", "Djinet", "Kharrouba", "Bouzegza Keddara"],
+    "El Tarf": ["El Tarf", "Bouhadjar", "Ben M'hidi", "Besbes", "Drean", "El Kala", "Asfour", "Berrihane", "Chebaita Mokhtar", "Chefia", "Chihani", "Ain El Assel", "Bougous", "Echatt", "Oued Zitoun", "Ramloul", "Souarekh", "Zerizer", "Hammam Beni Salah", "Zitouna"],
+    "Tindouf": ["Tindouf", "Oum El Assel"],
+    "Tissemsilt": ["Tissemsilt", "Khemisti", "Theniet El Had", "Lardjem", "Melaako", "Lazharia", "Beni Chaib", "Beni Lahcene", "Sidi Boutouchent", "Ouled Bessem", "Sidi Lantri", "Sidi Slimane", "Boucaid", "Bordj El Emir Abdelkader", "Layoune", "Ammari", "Maacem", "Bordj Bounaama", "Tamalaht", "Youssoufia"],
+    "El Oued": ["El Oued", "Robbah", "Bayadha", "Nakhla", "Guemar", "Ourmas", "Taghzout", "Hamraia", "Reguiba", "Debila", "Hassani Abdelkrim", "Hassi Khalifa", "Magrane", "Sidi Aoun", "Mih Ouansa", "Kouinine", "Sidi Amrane", "Mrara", "Djamaa", "Tenedla", "El M'ghair", "Oum Touyour", "Sidi Khelil", "Still", "Ben Guecha", "Douar El Ma"],
+    "Khenchela": ["Khenchela", "Babar", "El Hamma", "Baghai", "El Mahmal", "Ouled Rechache", "Chechar", "Khirane", "Yabous", "Taouzient", "Bouhmama", "Remila", "Kais", "Ensigha", "M'Sara", "Tamza", "Ain Touila"],
+    "Souk Ahras": ["Souk Ahras", "Sedrata", "Hanancha", "Machroha", "Ouled Driss", "Sidi Fredj", "Bir Bouhouche", "Safsaf El Ouesra", "Ragouba", "Drea", "Taoura", "Zaarouria", "Ouled Moumen", "Merahna", "Haddada", "Khedara", "M'daourouch", "Tiffech", "Ain Soltane", "Quillen", "Terrag"],
+    "Tipaza": ["Tipaza", "Menaceur", "Larhat", "Douaouda", "Bourkika", "Khemisti", "Ahmer El Ain", "Nadhor", "Hadjout", "Sidi Amar", "Sidi Ghiles", "Cherchell", "Damous", "Gouraya", "Sidi Semiane", "Meskelmoun", "Hadjret Ennous", "Sidi Rached", "Attatba", "Chaiba", "Bou Ismail", "Fouka", "Bouharoun", "Aine Tagourait", "Kolea"],
+    "Mila": ["Mila", "Oued Endja", "Ahmed Rachedi", "Bouhatem", "Rouached", "Tergou", "Grarem Gouga", "Hamala", "Sidi Khelifa", "Chigara", "Sidi Merouane", "Teleghma", "Oued Seguen", "Oued Athmania", "Ain Mellouk", "Chelghoum Laid", "Tadjenanet", "Benyahia Abderrahmane", "Taya", "Minar Zarza", "Amira Arres", "Ferdjioua", "Derradji Bousselah", "Tibane", "Baala", "Zeghaia"],
+    "Aïn Defla": ["Aïn Defla", "Miliana", "Boumedfaa", "Khemis Miliana", "Hammam Righa", "Sidi Lakhdar", "Aïn Benian", "Vesoul Benian", "Hocinia", "Djelida", "Bourached", "Hoceinia", "Djemaa Ouled Cheikh", "El Amra", "Mekhatria", "El Abadia", "Tacheta Zougagha", "Bir Ould Khelifa", "Bordj Emir Khaled", "Tarik Ibn Ziad", "Bathia", "Belaas", "Hassasna", "Djendel", "Main", "Djouab", "El Attaf"],
+    "Naâma": ["Naâma", "Mecheria", "Aïn Sefra", "Tiout", "Sfissifa", "Moghrar", "Asla", "Djeniane Bourzeg", "Kasdir", "Makman Ben Amer", "El Biodh"],
+    "Aïn Témouchent": ["Aïn Temouchent", "Sidi Ben Adda", "Maleh", "Chaabet El Ham", "Terga", "El Amria", "Hassi El Ghella", "Ouled Boudjemaa", "Aghlal", "Aïn Kihal", "Aïn Tolba", "Hammam Bouhadjar", "Chentouf", "Sidi Boumediene", "Oued Berkeche", "Sidi Safi", "Beni Saf", "Emir Abdelkader", "Oulhaca Gheraba", "Sidi Ouriache", "Bouzedjar"],
+    "Ghardaïa": ["Ghardaïa", "El Atteuf", "Bounoura", "Metlili", "Zelfana", "Dhayet Bendhahoua", "Berriiane", "Guerrara", "El Menia", "Hassi Fehal", "Hassi Gara", "Sebseb"],
+    "Relizane": ["Relizane", "Oued Rhiou", "Bendaoud", "Zemmora", "Dar Ben Abdellah", "Djidiouia", "Hamri", "El Guettar", "Sidi M'hamed Benaouda", "Ain El Tarik", "Had Echkalla", "El Matmar", "Sidi Khettab", "Ammi Moussa", "Oued El Djemaa", "Mendes", "Sidi Lazreg", "Ouarizane", "Mazouna", "El Hassi", "Sidi M'hamed Ben Ali", "Beni Zentis", "Medjabaa", "Lahlef", "Souk El Haad"],
+    "Timimoun": ["Timimoun", "Araouane", "Ouled Said", "Tinerkouk", "Fenoughil"],
+    "Bordj Badji Mokhtar": ["Bordj Badji Mokhtar", "Sbaa"],
+    "Ouled Djellal": ["Ouled Djellal", "Ras El Miaad", "Djemorah"],
+    "Béni Abbès": ["Béni Abbès", "Kerzaz"],
+    "Aïn Salah": ["Aïn Salah", "Foggaret Ezzaouia"],
+    "Aïn Guezzam": ["Aïn Guezzam", "Tin Zaouatine"],
+    "Touggourt": ["Touggourt", "Hassi Messaoud", "Rouissat", "El Hadjira"],
+    "Djanet": ["Djanet", "Debdeb"],
+    "El M'Ghair": ["El M'Ghair", "Oum Touyour"],
+    "El Meniaa": ["El Meniaa", "Ghardaia"],
+    "Aflou": ["Aflou", "Gueltat Sidi Saad", "Ain Sidi Ali", "Beidha", "Brida", "El Ghicha", "Hadj Mechri", "Sebgag", "Taouiala", "Oued Morra", "Oued M'zi"],
+    "Barika": ["Barika", "Bitam", "Sefiane", "Azil Abdeldjebar", "Tilatou", "Seguane", "El Jazar", "M'douhal", "Ouled Amar"],
+    "Ksar Chellala": ["Ksar Chellala", "Zmalet El Emir Abdelkader", "Rechaiga", "Hamadia", "Serghine", "Bougara"],
+    "Messaad": ["Messaad", "Sed Rahal", "Feidh El Botma", "El Kantara", "Selmana", "Ain El Ibel", "Deldoul", "Amourah"],
+    "Aïn Oussera": ["Aïn Oussera", "Birine", "Bouira Lahdab", "Khemis", "Sidi Ladjel", "Had Sahary", "Guernini", "Hassi Fedoul", "Benhar"],
+    "Boussaâda": ["Boussaâda", "El Hammal", "Slim", "Jebel Messaad", "Ben Srour", "Ouled Sidi Ibrahim", "Tamsa", "Belaiba", "Maarif", "Ain El Melh", "Bir Foda"],
+    "El Abiodh Sidi Cheikh": ["El Abiodh Sidi Cheikh", "Brezina", "Kef El Ahmar", "Boussemghoun", "Chellala", "Krakda", "El Mezeraa"],
+    "El Kantara": ["El Kantara", "Ain Naga", "Branis", "Lichana", "Djemorah", "Tolga"],
+    "Bir El Ater": ["Bir El Ater", "Negrine", "El Ogla", "Ferkane", "Safsaf El Ouesra"],
+    "Ksar El Boukhari": ["Ksar El Boukhari", "Boughezoul", "Chahbounia", "Aziz", "Saneg", "Moudjbar", "Mghane"],
+    "El Aricha": ["El Aricha", "El Qour", "Sidi Djillali", "El Bayhi", "Sebdou"]
+  },
+    "delivery": {
+        "Alger": { "home": 400, "office": 400 },
+        "Tipaza": { "home": 600, "office": 400 },
+        "Boumerdès": { "home": 600, "office": 400 },
+        "Blida": { "home": 600, "office": 400 },
+
+        "Relizane": { "home": 700, "office": 400 },
+        "Aïn Témouchent": { "home": 700, "office": 400 },
+        "Aïn Defla": { "home": 700, "office": 400 },
+        "Mila": { "home": 700, "office": 400 },
+        "Souk Ahras": { "home": 700, "office": 400 },
+        "Khenchela": { "home": 700, "office": 400 },
+        "Tissemsilt": { "home": 700, "office": 400 },
+        "El Tarf": { "home": 700, "office": 400 },
+        "Bordj Bou Arreridj": { "home": 700, "office": 400 },
+        "Oran": { "home": 700, "office": 400 },
+        "Mascara": { "home": 700, "office": 400 },
+        "M'Sila": { "home": 700, "office": 400 },
+        "Mostaganem": { "home": 700, "office": 400 },
+        "Médéa": { "home": 700, "office": 400 },
+        "Constantine": { "home": 700, "office": 400 },
+        "Guelma": { "home": 700, "office": 400 },
+        "Annaba": { "home": 700, "office": 400 },
+        "Sidi Bel Abbès": { "home": 700, "office": 400 },
+        "Skikda": { "home": 700, "office": 400 },
+        "Saïda": { "home": 700, "office": 400 },
+        "Sétif": { "home": 700, "office": 400 },
+        "Jijel": { "home": 700, "office": 400 },
+        "Tizi Ouzou": { "home": 700, "office": 400 },
+        "Tiaret": { "home": 700, "office": 400 },
+        "Tlemcen": { "home": 700, "office": 400 },
+        "Bouira": { "home": 700, "office": 400 },
+        "Béjaïa": { "home": 700, "office": 400 },
+        "Batna": { "home": 700, "office": 400 },
+        "Oum El Bouaghi": { "home": 700, "office": 400 },
+        "Chlef": { "home": 700, "office": 400 },
+
+        "Ghardaïa": { "home": 850, "office": 550 },
+        "El Oued": { "home": 850, "office": 550 },
+        "Ouargla": { "home": 850, "office": 550 },
+        "Djelfa": { "home": 850, "office": 550 },
+        "Tébessa": { "home": 850, "office": 550 },
+        "Biskra": { "home": 850, "office": 550 },
+        "Laghouat": { "home": 850, "office": 550 },
+
+        "Ouled Djellal": { "home": 900, "office": 500 },
+        "Touggourt": { "home": 900, "office": 500 },
+        "El M'Ghair": { "home": 900, "office": 500 },
+        "El Meniaa": { "home": 900, "office": 500 },
+
+        "Timimoun": { "home": 1300, "office": 850 },
+        "Bordj Badji Mokhtar": { "home": 1300, "office": 850 },
+        "Béni Abbès": { "home": 1300, "office": 850 },
+
+        "Naâma": { "home": 1350, "office": 900 },
+        "El Bayadh": { "home": 1350, "office": 900 },
+        "Béchar": { "home": 1350, "office": 900 },
+        "Adrar": { "home": 1350, "office": 900 },
+
+        "Aïn Salah": { "home": 1500, "office": 1250 },
+        "Aïn Guezzam": { "home": 1500, "office": 1250 },
+        "Djanet": { "home": 1500, "office": 1250 },
+
+        "Tindouf": { "home": 1550, "office": 1300 },
+        "Illizi": { "home": 1550, "office": 1300 },
+        "Tamanrasset": { "home": 1550, "office": 1300 }
+    },
+  "offices": {
+    "Adrar": ["Agence de Adrar Yalidine"],
+    "Aïn Defla": ["Agence de Aïn Defla Guepex", "Agence de Khemis Miliana Guepex"],
+    "Aïn Témouchent": ["Agence de Aïn Témouchent Yalidine", "Agence de Beni Saf Guepex"],
+    "Annaba": ["Agence de El Bouni Guepex", "Agence de Sidi Brahim Guepex", "Agence de Valmascort Yalidine", "Agence Sidi Achour GHANZOH EXPRESS By YALIDINE"],
+    "Batna": ["Agence de Barika Guepex", "Agence des 500 Logements Yalidine", "Agence du CHU Route de Tazoult Guepex"],
+    "Béchar": ["Agence de Béchar Yalidine"],
+    "Béjaïa": ["Agence de Akbou Yalidine", "Agence de Béjaïa Edimco Yalidine", "Agence de Béjaïa El Qods Guepex", "Agence de El Kseur Guepex"],
+    "Biskra": ["Agence de Tolga Guepex", "Agence zone ouest Biskra Easyandspeed"],
+    "Blida": ["Agence de Bab Dzair Guepex", "Agence de Blida Yalidine", "Agence de Boufarik Guepex", "Agence de Larbaa Zimou-Express", "Agence Mouzaia Blida GUEPEX", "Agence Ouled Yaich Yalidine"],
+    "Bordj Bou Arreridj": ["Agence BBA Nouveau Lycée GUEPEX", "Agence de El Djebasse Yalidine"],
+    "Bordj Badji Mokhtar": [],
+    "Bouïra": ["Agence de Bouira Yalidine", "Agence de Lakhdaria Yalidine", "Agence de Sour El Ghouzlane Guepex"],
+    "Boumerdès": ["Agence Boudouaou Guepex", "Agence de Bordj Menaiel Guepex", "Agence de Boumerdes Yalidine", "Agence Hammedi WeCanServices"],
+    "Chlef": ["Agence de Chlef Guepex", "Agence de Chlef Yalidine", "Agence de Ténès Guepex"],
+    "Constantine": ["Agence Belle vue Yalidine", "Agence de Constantine Zouaghi ZIMOU-Express", "Agence de Didouche Mourad Yalidine", "Agence d'El Khroub Guepex", "Agence Nouvelle ville Ali Mendjeli Yalidine", "Agence nouvelle ville guepex", "Agence Sidi Mabrouk Guepex"],
+    "Djelfa": ["Agence de Aïn Oussera Yalidine", "Agence de Djelfa Yalidine"],
+    "Djanet": ["Agence de Djanet Guepex"],
+    "El Aricha": ["Agence de El Aricha Yalidine"],
+    "El Abiodh Sidi Cheikh": ["Agence de El Bayadh Yalidine"],
+    "El Bayadh": ["Agence de El Bayadh Yalidine"],
+    "El Kantara": ["Agence de Biskra Guepex"],
+    "El M'Ghair": ["Agence de Djamaa Guepex", "Agence de El M'Ghair Yalidine"],
+    "El Meniaa": ["Agence de El Menia Yalidine"],
+    "El Oued": ["Agence de El Oued Yalidine"],
+    "El Tarf": ["Agence de El Tarf Yalidine", "Agence Dréan El Tarf Yalidine"],
+    "Alger": ["Dar Diaf Yalidine", "Hussein Dey Yalidine", "Sacré-Cœur Guepex", "Agence BAB EZZOUAR Yalitec", "Agence Bir Mourad Rais EasyAndSpeed", "Agence Bordj El Bahri (Café Chergui) Yalidine", "Agence de Aïn Benian Guepex", "Agence de Bab El Oued Guepex", "Agence de Baraki Guepex", "Agence de Birkhadem Yalidine", "Agence de Birtouta Guepex", "Agence de Bordj El Kiffan Yalidine", "Agence de DNC Yalidine", "Agence de Draria Guepex", "Agence d'El Hamiz EasyandSpeed", "Agence de Ouled Fayet Guepex", "Agence de Rouiba Zimou-Express", "Agence de Sidi Abdellah Zimou Express", "Agence des Pins Maritime Yalitec", "Agence de Zeralda Guepex", "Agence El Harach-Beaulieu WeCanServices", "Agence Les Eucalyptus Zimou-Express", "Amara Yalidine"],
+    "Afflou": ["Agence de Aflou Yalidine"],
+    "Guelma": ["Agence de Oued Zenati Guepex", "Nouvelle Agence Guelma Yalidine"],
+    "Ghardaïa": ["Agence de Bouhraoua Yalidine", "Agence de Ghardaïa Thenia Guepex"],
+    "Illizi": ["Agence de Illizi Guepex", "Agence In Amenas Guepex"],
+    "Jijel": ["Agence de El Milia Guepex", "Agence de Jijel Yalidine", "Agence de Taher Guepex", "Agence Jijel Kaous Yalidine"],
+    "Khenchela": ["Agence route de Meskiana Yalidine"],
+    "Laghouat": ["Agence de Aflou Yalidine", "Agence Laghouat Cité OASIS Easyandspeed"],
+    "Mascara": ["Agence de Mascara Yalidine"],
+    "Médéa": ["Agence de Médéa El Koutab Yalidine", "Agence de Médéa Pole Urbain Guepex", "Agence Médéa Beni Slimane Yalidine", "Agence Tablat Yalidine"],
+    "Mila": ["Agence de Chelghoum Laid Yalidine", "Agence de Mila Yalidine"],
+    "Mostaganem": ["Kharouba Guepex", "Salamandre Yalidine"],
+    "M'Sila": ["Agence de Berhoum Guepex", "Agence de Bou Saâda Yalidine", "Agence Salem Shopping Mall Yalidine", "Agence Sidi Aïssa Guepex"],
+    "Naâma": ["Agence de Mecheria Guepex"],
+    "Oran": ["Agence de Arzew Guepex", "Agence de Gambetta Zimou-Express", "Agence Fernand Ville Yalidine", "Cité Djamel Guepex", "El Morchid Yalidine", "Saint Hubert Yalidine"],
+    "Ouargla": ["Agence de Hassi Messaoud Yalidine", "Agence de Ouargla Centre ville GUEPEX", "Agence de Ouargla (Chetti el wekal) Yalidine"],
+    "Oum El Bouaghi": ["Agence de Aïn M'lila Yalidine", "Agence de Oum el Bouaghi Yalidine"],
+    "Ouled Djellal": ["Agence de Ouled Djellal Yalidine"],
+    "Relizane": ["Agence de Relizane Yalidine"],
+    "Saïda": ["Agence de Saïda Yalidine"],
+    "Sétif": ["Agence de Aïn Oulmene Guepex", "Agence de Bougaa Guepex", "Agence de Sétif Tinar Zimou-Express", "Agence El Hidhab Guepex", "Agence Maabouda Yalidine", "Desk El Eulma Yalidine"],
+    "Sidi Bel Abbès": ["Agence de Sidi Bel Abbès Yalidine", "Agence Sidi Bel Abbès Benhamouda-Guepex"],
+    "Skikda": ["Agence de Azzaba Guepex", "Agence de Collo Guepex", "Agence de El Harrouch Guepex", "Agence de Skikda Faubourg Guepex", "Nouvelle Agence Skikda L'espérance Yalidine"],
+    "Souk Ahras": ["Agence de Souk Ahras Yalidine"],
+    "Tamanrasset": ["Agence de Tamanrasset(Gataa Elouad) Guepex", "Agence Tamanrasset EasyAndSpeed", "Agence Tamanrasset(TAHAGART) YALIDINE"],
+    "Tébessa": ["Agence Cheria Tébessa GUEPEX", "Agence de Tébessa Yalidine", "Centre de tri Skanska Tébessa Yalidine"],
+    "Tiaret": ["Agence de Tiaret Yalidine"],
+    "Timimoun": ["Agence de Timimoun Yalidine"],
+    "Tindouf": ["Agence de Tindouf Yalidine"],
+    "Tipaza": ["Agence Cherchell Guepex", "Agence De Kolea GUEPEX", "Agence de Tipaza Yalidine", "Agence Hadjout EasyAndSpeed"],
+    "Tissemsilt": ["Agence de Tissemsilt Yalidine"],
+    "Tizi Ouzou": ["Agence de Azazga Yalidine", "Agence de Bekkar Guepex", "Agence de Draâ Ben Khedda Guepex", "Agence de nouvelle ville Yalidine", "Agence de Tizi Gheniff Guepex"],
+    "Tlemcen": ["Agence Chetouane Yalidine", "Agence de Maghnia Yalidine", "Agence de Tlemcen(Bel-Air) Guepex", "Agence de Tlemcen(Mansourah) Yalidine", "Agence Remchi Yalidine"],
+    "Touggourt": ["Agence de Touggourt Yalidine"],
+    "Béni Abbès": [],
+    "Aïn Salah": [],
+    "Aïn Guezzam": [],
+    "Barika": ["Agence de Barika Guepex"],
+    "Ksar Chellala": ["Agence de Tiaret Yalidine"],
+    "Messaad": ["Agence de Djelfa Yalidine"],
+    "Aïn Oussera": ["Agence de Djelfa Yalidine"],
+    "Boussaâda": ["Agence de Bou Saâda Yalidine"],
+    "Ksar El Boukhari": ["Agence de Médéa Pole Urbain Guepex"]
+  }
+};
+
+        // fallback product images
+        window.__productImages = ["images/prod1/image1.jpg", "images/prod1/image2.jpg"];
+        </script>
+        <script src="script.js"></script>
+</body>
+</html>
