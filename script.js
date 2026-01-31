@@ -18,64 +18,6 @@ let detailGalleryIndex = 0;
 let isBackBtnVisible = false;
 let activeProductId = 'prod1';
 
-// Friendly slugs used for browser URLs (keeps paths short and stable)
-const PAGE_SLUGS = {
-    prod1: 'r6',
-    prod2: 'eldian',
-    create: 'create-your-style'
-};
-
-function buildFullPath(slug) {
-    try {
-        const base = window.location.pathname.replace(/\/$/, '');
-        return base + '/' + slug;
-    } catch (e) {
-        return '/' + slug;
-    }
-}
-
-function getPathSlug() {
-    try {
-        const parts = window.location.pathname.replace(/\/$/, '').split('/');
-        return parts[parts.length - 1] || '';
-    } catch (e) { return ''; }
-}
-
-function navigateToSlug(slug) {
-    try {
-        if (!slug) {
-            // go home
-            const cardsContainer = document.querySelector('.cards-container');
-            const productCard = document.getElementById('productCard');
-            const productCard2 = document.getElementById('productCard2');
-            const customCard = document.getElementById('customCard');
-            if (cardsContainer) cardsContainer.style.display = 'flex';
-            if (productCard) productCard.style.display = 'block';
-            if (productCard2) productCard2.style.display = 'block';
-            if (customCard) customCard.style.display = 'block';
-            setBackButtonVisible(false);
-            showGreeting();
-            return;
-        }
-
-        if (slug === PAGE_SLUGS.prod1) {
-            const productCard = document.getElementById('productCard');
-            if (productCard) productCard.click();
-            return;
-        }
-        if (slug === PAGE_SLUGS.prod2) {
-            const productCard2 = document.getElementById('productCard2');
-            if (productCard2) productCard2.click();
-            return;
-        }
-        if (slug === PAGE_SLUGS.create) {
-            const customCard = document.getElementById('customCard');
-            if (customCard) customCard.click();
-            return;
-        }
-    } catch (e) { /* ignore */ }
-}
-
 // Accept Unicode letters (including Arabic) and spaces
 const NAME_REGEX = /^[\p{L} ]+$/u;
 const COUPON_REGEX = /^[A-Za-z]+$/;
@@ -170,30 +112,7 @@ function initializeApp() {
             });
         }
     } catch (e) { console.warn('logo bind failed', e); }
-
-    // On initial load, if a friendly slug is present in the URL, navigate to that page.
-    try {
-        const slug = getPathSlug();
-        if (slug && slug !== '' && slug !== 'index.html') {
-            navigateToSlug(slug);
-            try { history.replaceState({ page: slug }, '', window.location.pathname); } catch (e) {}
-        } else {
-            try { history.replaceState({ page: 'home' }, '', window.location.pathname.replace(/\/[^\/]*$/, '/')); } catch (e) {}
-        }
-    } catch (e) { /* ignore */ }
 }
-
-// Keep browser back/forward in sync with in-page navigation
-window.addEventListener('popstate', function (ev) {
-    try {
-        const slug = (ev && ev.state && ev.state.page) ? ev.state.page : getPathSlug();
-        if (!slug || slug === 'home') {
-            navigateToSlug('');
-        } else {
-            navigateToSlug(slug);
-        }
-    } catch (e) { /* ignore */ }
-});
 
 function initGallery() {
     productImages = window.__productImages || [];
@@ -1294,10 +1213,6 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
-                try {
-                    const path = buildFullPath(PAGE_SLUGS.prod1);
-                    history.pushState({ page: PAGE_SLUGS.prod1 }, '', path);
-                } catch (e) { }
             } catch (err) {
                 console.error('Error opening product details', err);
             }
@@ -1335,10 +1250,6 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
-                try {
-                    const path = buildFullPath(PAGE_SLUGS.prod2);
-                    history.pushState({ page: PAGE_SLUGS.prod2 }, '', path);
-                } catch (e) { }
             } catch (err) {
                 console.error('Error opening product details', err);
             }
@@ -1375,10 +1286,6 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
-                try {
-                    const path = buildFullPath(PAGE_SLUGS.create);
-                    history.pushState({ page: PAGE_SLUGS.create }, '', path);
-                } catch (e) { }
             } catch (err) {
                 console.error('Error opening custom product', err);
             }
