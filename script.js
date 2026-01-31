@@ -67,6 +67,13 @@ function initializeApp() {
         backBtn.style.display = 'none';
         isBackBtnVisible = false;
     }
+    // Hide floating site logo on the home page by default
+    const siteLogoBtn = document.getElementById('siteLogoBtn');
+    if (siteLogoBtn) {
+        siteLogoBtn.style.display = 'none';
+        siteLogoBtn.style.opacity = '0';
+        siteLogoBtn.style.pointerEvents = 'none';
+    }
 
     stateInput = document.getElementById('state');
     communeInput = document.getElementById('commune');
@@ -95,6 +102,21 @@ function initializeApp() {
     try { initCustomizationDefaults(); } catch(e) { console.error('initCustomizationDefaults error', e); }
     calculate();
     calculateCustom();
+    // Bind site logo button (refresh) if present
+    try {
+        const logoBtn = document.getElementById('siteLogoBtn');
+        if (logoBtn) {
+            logoBtn.addEventListener('click', (ev) => {
+                ev.preventDefault();
+                try { window.location.reload(); } catch (e) { window.location.href = window.location.href; }
+            });
+        }
+    } catch (e) { console.warn('logo bind failed', e); }
+
+    // Ensure the browser shows the base site link on load and store an initial history state.
+    try {
+        history.replaceState({ page: 'home' }, '', '/');
+    } catch (e) { /* ignore */ }
 }
 
 function initGallery() {
@@ -334,7 +356,118 @@ function setBackButtonVisible(visible) {
             isBackBtnVisible = false;
         }
     }
+
+    // Also toggle the floating site logo: show it whenever back button is visible (non-home pages)
+    try {
+        const logo = document.getElementById('siteLogoBtn');
+        if (logo) {
+            if (visible) {
+                logo.style.display = 'flex';
+                logo.style.opacity = '1';
+                logo.style.pointerEvents = 'auto';
+            } else {
+                logo.style.display = 'none';
+                logo.style.opacity = '0';
+                logo.style.pointerEvents = 'none';
+            }
+        }
+    } catch (e) { /* ignore */ }
 }
+
+// Update browser URL without reloading (safe small-friendly slugs)
+function updateBrowserPath(page) {
+    try {
+        const slug = (page === 'home' || !page) ? '/' : '/' + encodeURIComponent(page);
+        history.pushState({ page: page }, '', slug);
+    } catch (e) {
+        // ignore
+    }
+}
+
+// Create a URL-friendly slug from a product/page title
+function slugifyTitle(title) {
+    if (!title) return '';
+    return title.toString().trim().toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-\u0600-\u06FF]+/g, '')
+        .replace(/--+/g, '-')
+        .replace(/(^-|-$)/g, '');
+}
+
+function pushPageForTitle(title) {
+    try {
+        const slug = slugifyTitle(title) || 'page';
+        history.pushState({ page: slug, title: title }, '', '/' + slug);
+    } catch (e) { }
+}
+
+// Restore UI for a given history state without pushing a new state
+function goToPage(page) {
+    try {
+        const cardsContainer = document.querySelector('.cards-container');
+        const productCard = document.getElementById('productCard');
+        const productCard2 = document.getElementById('productCard2');
+        const customCard = document.getElementById('customCard');
+        const orderDetails = document.getElementById('orderDetails');
+        const customProductPage = document.getElementById('customProductPage');
+        const previewPage = document.getElementById('customizationPreviewPage');
+
+        // Collapse everything first
+        if (orderDetails) { orderDetails.style.display = 'none'; orderDetails.style.opacity = '0'; }
+        if (customProductPage) { customProductPage.style.display = 'none'; customProductPage.style.opacity = '0'; }
+        if (previewPage) { previewPage.style.display = 'none'; previewPage.style.opacity = '0'; previewPage.style.pointerEvents = 'none'; }
+
+        // Map product-title slugs to the correct pages
+        const prod1Slug = slugifyTitle('R6 Precision Hoodie');
+        const prod2Slug = slugifyTitle('Eldian Empire Hoodie');
+        const createSlug = slugifyTitle('Create Your Style');
+
+        if (page === prod1Slug) {
+            setActiveProduct('prod1');
+            if (cardsContainer) cardsContainer.style.display = 'none';
+            if (productCard) productCard.style.display = 'none';
+            if (orderDetails) { orderDetails.style.display = 'flex'; setTimeout(() => orderDetails.style.opacity = '1', 50); }
+            setBackButtonVisible(true);
+            hideGreeting();
+            return;
+        }
+
+        if (page === prod2Slug) {
+            setActiveProduct('prod2');
+            if (cardsContainer) cardsContainer.style.display = 'none';
+            if (productCard2) productCard2.style.display = 'none';
+            if (orderDetails) { orderDetails.style.display = 'flex'; setTimeout(() => orderDetails.style.opacity = '1', 50); }
+            setBackButtonVisible(true);
+            hideGreeting();
+            return;
+        }
+
+        if (page === createSlug) {
+            if (cardsContainer) cardsContainer.style.display = 'none';
+            if (customCard) customCard.style.display = 'none';
+            if (customProductPage) { customProductPage.style.display = 'flex'; setTimeout(() => customProductPage.style.opacity = '1', 50); }
+            setBackButtonVisible(true);
+            hideGreeting();
+            return;
+        }
+
+        // default / home
+        if (cardsContainer) cardsContainer.style.display = 'flex';
+        if (productCard) productCard.style.display = 'block';
+        if (productCard2) productCard2.style.display = 'block';
+        if (customCard) customCard.style.display = 'block';
+        setBackButtonVisible(false);
+        showGreeting();
+    } catch (e) { console.warn('goToPage failed', e); }
+}
+
+// Handle browser back/forward
+window.addEventListener('popstate', function (ev) {
+    try {
+        const st = ev.state && ev.state.page ? ev.state.page : 'home';
+        goToPage(st);
+    } catch (e) { }
+});
 
 // Function to initialize default selections for customization
 function initCustomizationDefaults() {
@@ -480,6 +613,22 @@ function showCustomizationPage(imagePath) {
             previewPage.style.opacity = '1';
         }, 10);
         previewPage.classList.add('show');
+        // Hide color options and color boxes while in preview/edit mode
+        try {
+            const hideSelectors = ['.color-option', '.color-swatch', '.color-box'];
+            const found = [];
+            hideSelectors.forEach(sel => {
+                document.querySelectorAll(sel).forEach(el => {
+                    // Only hide visible ones and mark them for restore
+                    if (el.style.display !== 'none') {
+                        el.dataset._hiddenByPreview = 'true';
+                        el.style.display = 'none';
+                        found.push(el);
+                    }
+                });
+            });
+            window._previewHiddenColorEls = found;
+        } catch (e) { /* ignore */ }
     }
 }
 
@@ -580,6 +729,13 @@ function initDesignEditor() {
             designLayer.style.top = Math.max(0, Math.min(ch - ch * hp, ch * yp)) + 'px';
             designLayer.style.width = Math.max(50, cw * wp) + 'px';
             designLayer.style.height = Math.max(50, ch * hp) + 'px';
+            if (uploadedDesign) {
+                uploadedDesign.style.width = '100%';
+                uploadedDesign.style.height = '100%';
+                uploadedDesign.style.objectFit = 'fill';
+                uploadedDesign.style.maxWidth = 'none';
+                uploadedDesign.style.maxHeight = 'none';
+            }
         }
 
         const rot = parseFloat(designLayer.dataset.rotation || '0');
@@ -780,6 +936,13 @@ function initDesignEditor() {
                         const defaultSize = Math.min(220, Math.max(140, Math.min(cw, ch) * 0.35));
                         designLayer.style.width = defaultSize + 'px';
                         designLayer.style.height = defaultSize + 'px';
+                        if (uploadedDesign) {
+                            uploadedDesign.style.width = '100%';
+                            uploadedDesign.style.height = '100%';
+                            uploadedDesign.style.objectFit = 'fill';
+                            uploadedDesign.style.maxWidth = 'none';
+                            uploadedDesign.style.maxHeight = 'none';
+                        }
                         currentRotation = 0;
                         designLayer.style.transform = 'rotate(0deg)';
 
@@ -968,6 +1131,13 @@ function initDesignEditor() {
 
                 designLayer.style.width = newWidth + 'px';
                 designLayer.style.height = newHeight + 'px';
+                if (uploadedDesign) {
+                    uploadedDesign.style.width = '100%';
+                    uploadedDesign.style.height = '100%';
+                    uploadedDesign.style.objectFit = 'fill';
+                    uploadedDesign.style.maxWidth = 'none';
+                    uploadedDesign.style.maxHeight = 'none';
+                }
                 designLayer.style.left = newLeft + 'px';
                 designLayer.style.top = newTop + 'px';
                 updateDesignSizeDisplay();
@@ -1044,6 +1214,13 @@ function initDesignEditor() {
 
                 designLayer.style.width = newWidth + 'px';
                 designLayer.style.height = newHeight + 'px';
+                if (uploadedDesign) {
+                    uploadedDesign.style.width = '100%';
+                    uploadedDesign.style.height = '100%';
+                    uploadedDesign.style.objectFit = 'fill';
+                    uploadedDesign.style.maxWidth = 'none';
+                    uploadedDesign.style.maxHeight = 'none';
+                }
                 designLayer.style.left = newLeft + 'px';
                 designLayer.style.top = newTop + 'px';
                 updateDesignSizeDisplay();
@@ -1131,6 +1308,10 @@ function setupEventListeners() {
                     setTimeout(() => orderDetails.style.opacity = '1', 50);
                 }
                 setBackButtonVisible(true);
+                try {
+                    const title = (document.getElementById('detailProductName') || {}).textContent || 'R6 Precision Hoodie';
+                    pushPageForTitle(title);
+                } catch (e) {}
                 const greeting = document.querySelector('.site-greeting');
                 if (greeting) {
                     greeting.classList.remove('visible');
@@ -1151,6 +1332,10 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
+                try {
+                    const title = (document.getElementById('detailProductName') || {}).textContent || 'R6 Precision Hoodie';
+                    pushPageForTitle(title);
+                } catch (e) {}
             };
         }
     }
@@ -1168,6 +1353,10 @@ function setupEventListeners() {
                     setTimeout(() => orderDetails.style.opacity = '1', 50);
                 }
                 setBackButtonVisible(true);
+                try {
+                    const title = (document.getElementById('detailProductName') || {}).textContent || 'Eldian Empire Hoodie';
+                    pushPageForTitle(title);
+                } catch (e) {}
                 const greeting = document.querySelector('.site-greeting');
                 if (greeting) {
                     greeting.classList.remove('visible');
@@ -1188,6 +1377,10 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
+                try {
+                    const title = (document.getElementById('detailProductName') || {}).textContent || 'Eldian Empire Hoodie';
+                    pushPageForTitle(title);
+                } catch (e) {}
             };
         }
     }
@@ -1204,6 +1397,7 @@ function setupEventListeners() {
                     setTimeout(() => customProductPage.style.opacity = '1', 50);
                 }
                 setBackButtonVisible(true);
+                try { pushPageForTitle('Create Your Style'); } catch (e) {}
                 const greeting = document.querySelector('.site-greeting');
                 if (greeting) {
                     greeting.classList.remove('visible');
@@ -1224,6 +1418,7 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
+                try { pushPageForTitle('Create Your Style'); } catch (e) {}
             };
         }
     }
@@ -1292,10 +1487,18 @@ function setupEventListeners() {
             
             // Build image path
             const sideNum = selectedSide === 'front' ? '1' : '2';
-            const imagePath = `images/dp1/mockup/${selectedColor}${sideNum}.png`;
+            const imagePath = `images/dp/dp product 1/mockup/${selectedColor}${sideNum}.png`;
             
             // Store in sessionStorage for the customization page
+            // Include product context (title and base image) so the custom flow is product-aware
+            const prodTitleEl = document.querySelector('.custom-product-title');
+            const prodImageEl = document.querySelector('.custom-card-image');
+            const productName = prodTitleEl ? prodTitleEl.textContent.trim() : 'Regular Hoodie';
+            const productBaseImage = prodImageEl ? prodImageEl.src : '';
+
             sessionStorage.setItem('customizationData', JSON.stringify({
+                productName: productName,
+                productBaseImage: productBaseImage,
                 color: selectedColor,
                 side: selectedSide,
                 imagePath: imagePath
@@ -1491,8 +1694,23 @@ function setupEventListeners() {
                             setBackButtonVisible(true);
                             setTimeout(() => {
                                 customProductPage.style.opacity = '1';
+                                try { pushPageForTitle('Create Your Style'); } catch (e) {}
                             }, 10);
                         }
+                        // Restore any color elements hidden when entering preview
+                        try {
+                            if (Array.isArray(window._previewHiddenColorEls)) {
+                                window._previewHiddenColorEls.forEach(el => {
+                                    try {
+                                        if (el && el.dataset && el.dataset._hiddenByPreview === 'true') {
+                                            el.style.display = '';
+                                            delete el.dataset._hiddenByPreview;
+                                        }
+                                    } catch(e) {}
+                                });
+                            }
+                            window._previewHiddenColorEls = [];
+                        } catch (e) { /* ignore */ }
                     }, 300);
                 }
                 // If custom product page is showing, go back to cards
@@ -1510,6 +1728,7 @@ function setupEventListeners() {
                         if (cardsContainer) cardsContainer.style.display = 'flex';
                         setBackButtonVisible(false);
                         showGreeting();
+                        try { updateBrowserPath('home'); } catch (e) {}
                     }, 300);
                 }
                 // If order details page is showing, go back to product card
@@ -1534,6 +1753,7 @@ function setupEventListeners() {
                         if (cardsContainer) cardsContainer.style.display = 'flex';
                         setBackButtonVisible(false);
                         showGreeting();
+                        try { updateBrowserPath('home'); } catch (e) {}
                     }, 300);
                 }
                 // Otherwise go back to cards
@@ -1544,6 +1764,7 @@ function setupEventListeners() {
                     if (cardsContainer) cardsContainer.style.display = 'flex';
                     setBackButtonVisible(false);
                     showGreeting();
+                    try { updateBrowserPath('home'); } catch (e) {}
                 }
                 
                 // Hide back button when returning to cards
@@ -1803,26 +2024,17 @@ function handleConfirmOrder() {
     }
 
     if (!state || !deliveryType) {
-        if (err) {
-            err.textContent = 'Please select delivery and wilaya.';
-            err.style.display = 'block';
-        }
+        showErrorAndScroll(err, 'Please select delivery and wilaya.');
         return;
     }
 
     if (deliveryType === 'home' && !commune) {
-        if (err) {
-            err.textContent = 'Please select a commune.';
-            err.style.display = 'block';
-        }
+        showErrorAndScroll(err, 'Please select a commune.');
         return;
     }
 
     if (deliveryType === 'office' && !office) {
-        if (err) {
-            err.textContent = 'Please select an office.';
-            err.style.display = 'block';
-        }
+        showErrorAndScroll(err, 'Please select an office.');
         return;
     }
 
@@ -1882,26 +2094,17 @@ function handleConfirmCustomOrder() {
     }
 
     if (!state || !deliveryType) {
-        if (err) {
-            err.textContent = 'Please select delivery and wilaya.';
-            err.style.display = 'block';
-        }
+        showErrorAndScroll(err, 'Please select delivery and wilaya.');
         return;
     }
 
     if (deliveryType === 'home' && !commune) {
-        if (err) {
-            err.textContent = 'Please select a commune.';
-            err.style.display = 'block';
-        }
+        showErrorAndScroll(err, 'Please select a commune.');
         return;
     }
 
     if (deliveryType === 'office' && !office) {
-        if (err) {
-            err.textContent = 'Please select an office.';
-            err.style.display = 'block';
-        }
+        showErrorAndScroll(err, 'Please select an office.');
         return;
     }
 
@@ -1934,7 +2137,9 @@ function handleConfirmCustomOrder() {
 
         const formData = new FormData();
         formData.append('product', 'custom - ' + prodName);
-        formData.append('priceBeforeFees', document.querySelector('.new-price') ? document.querySelector('.new-price').textContent : '');
+        const customNewPriceEl = document.querySelector('#customizationPreviewPage .new-price');
+        const priceBeforeFees = (customNewPriceEl && customNewPriceEl.textContent) ? customNewPriceEl.textContent : '';
+        formData.append('priceBeforeFees', priceBeforeFees);
         formData.append('name', name);
         formData.append('phone', phone);
         formData.append('wilaya', state);
@@ -2075,66 +2280,59 @@ function showSuccessPage(nameValue, phoneValue) {
     successPage.style.pointerEvents = 'auto';
 }
 
+function showErrorAndScroll(el, message) {
+    if (!el) return;
+    el.textContent = message;
+    el.style.display = 'block';
+    try {
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '-1');
+        el.focus({ preventScroll: true });
+    } catch (e) {}
+    setTimeout(() => {
+        try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+    }, 50);
+}
+
 function validateCommonFields({ name, phone, coupon, size }, errorEl) {
     if (!size) {
-        if (errorEl) {
-            errorEl.textContent = 'Please select a size.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Please select a size.');
         return false;
     }
 
     if (!name || !name.trim()) {
-        if (errorEl) {
-            errorEl.textContent = 'Please fill in your name.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Please fill in your name.');
         return false;
     }
 
     if (name.trim().length < 4) {
-        if (errorEl) {
-            errorEl.textContent = 'Name must be at least 4 characters.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Name must be at least 4 characters.');
         return false;
     }
 
     if (!NAME_REGEX.test(name)) {
-        if (errorEl) {
-            errorEl.textContent = 'Please enter a valid name.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Please enter a valid name.');
         return false;
     }
 
     if (!phone || !phone.trim()) {
-        if (errorEl) {
-            errorEl.textContent = 'Please fill in your phone number.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Please fill in your phone number.');
         return false;
     }
 
     if (!PHONE_REGEX.test(phone)) {
-        if (errorEl) {
-            errorEl.textContent = 'Please enter a valid phone number.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Please enter a valid phone number.');
         return false;
     }
 
     if (coupon && !COUPON_REGEX.test(coupon)) {
-        if (errorEl) {
-            errorEl.textContent = 'Please enter a valid discount code.';
-            errorEl.style.display = 'block';
-        }
+        showErrorAndScroll(errorEl, 'Please enter a valid discount code.');
         return false;
     }
 
     if (errorEl) {
         errorEl.textContent = '';
         errorEl.style.display = 'none';
+        try { errorEl.removeAttribute('tabindex'); } catch (e) {}
     }
 
     return true;
@@ -2175,7 +2373,12 @@ async function sendImagesBase64ToSheet(productImageSrc, pngImageSrc, dateString)
     if (customTitleEl && customTitleEl.textContent && customTitleEl.textContent.trim()) {
         productName = customTitleEl.textContent.trim();
     } else if (sessionStorage && sessionStorage.getItem && sessionStorage.getItem('customizationData')) {
-        productName = 'Regular Hoodie';
+        try {
+            const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
+            productName = cd.productName || 'Regular Hoodie';
+        } catch (e) {
+            productName = 'Regular Hoodie';
+        }
     } else if (detailTitleEl && detailTitleEl.textContent && detailTitleEl.textContent.trim()) {
         productName = detailTitleEl.textContent.trim();
     } else if (typeof activeProductId !== 'undefined') {
