@@ -18,6 +18,64 @@ let detailGalleryIndex = 0;
 let isBackBtnVisible = false;
 let activeProductId = 'prod1';
 
+// Friendly slugs used for browser URLs (keeps paths short and stable)
+const PAGE_SLUGS = {
+    prod1: 'r6',
+    prod2: 'eldian',
+    create: 'create-your-style'
+};
+
+function buildFullPath(slug) {
+    try {
+        const base = window.location.pathname.replace(/\/$/, '');
+        return base + '/' + slug;
+    } catch (e) {
+        return '/' + slug;
+    }
+}
+
+function getPathSlug() {
+    try {
+        const parts = window.location.pathname.replace(/\/$/, '').split('/');
+        return parts[parts.length - 1] || '';
+    } catch (e) { return ''; }
+}
+
+function navigateToSlug(slug) {
+    try {
+        if (!slug) {
+            // go home
+            const cardsContainer = document.querySelector('.cards-container');
+            const productCard = document.getElementById('productCard');
+            const productCard2 = document.getElementById('productCard2');
+            const customCard = document.getElementById('customCard');
+            if (cardsContainer) cardsContainer.style.display = 'flex';
+            if (productCard) productCard.style.display = 'block';
+            if (productCard2) productCard2.style.display = 'block';
+            if (customCard) customCard.style.display = 'block';
+            setBackButtonVisible(false);
+            showGreeting();
+            return;
+        }
+
+        if (slug === PAGE_SLUGS.prod1) {
+            const productCard = document.getElementById('productCard');
+            if (productCard) productCard.click();
+            return;
+        }
+        if (slug === PAGE_SLUGS.prod2) {
+            const productCard2 = document.getElementById('productCard2');
+            if (productCard2) productCard2.click();
+            return;
+        }
+        if (slug === PAGE_SLUGS.create) {
+            const customCard = document.getElementById('customCard');
+            if (customCard) customCard.click();
+            return;
+        }
+    } catch (e) { /* ignore */ }
+}
+
 // Accept Unicode letters (including Arabic) and spaces
 const NAME_REGEX = /^[\p{L} ]+$/u;
 const COUPON_REGEX = /^[A-Za-z]+$/;
@@ -113,11 +171,29 @@ function initializeApp() {
         }
     } catch (e) { console.warn('logo bind failed', e); }
 
-    // Ensure the browser shows the base site link on load and store an initial history state.
+    // On initial load, if a friendly slug is present in the URL, navigate to that page.
     try {
-        history.replaceState({ page: 'home' }, '', '/');
+        const slug = getPathSlug();
+        if (slug && slug !== '' && slug !== 'index.html') {
+            navigateToSlug(slug);
+            try { history.replaceState({ page: slug }, '', window.location.pathname); } catch (e) {}
+        } else {
+            try { history.replaceState({ page: 'home' }, '', window.location.pathname.replace(/\/[^\/]*$/, '/')); } catch (e) {}
+        }
     } catch (e) { /* ignore */ }
 }
+
+// Keep browser back/forward in sync with in-page navigation
+window.addEventListener('popstate', function (ev) {
+    try {
+        const slug = (ev && ev.state && ev.state.page) ? ev.state.page : getPathSlug();
+        if (!slug || slug === 'home') {
+            navigateToSlug('');
+        } else {
+            navigateToSlug(slug);
+        }
+    } catch (e) { /* ignore */ }
+});
 
 function initGallery() {
     productImages = window.__productImages || [];
@@ -373,101 +449,6 @@ function setBackButtonVisible(visible) {
         }
     } catch (e) { /* ignore */ }
 }
-
-// Update browser URL without reloading (safe small-friendly slugs)
-function updateBrowserPath(page) {
-    try {
-        const slug = (page === 'home' || !page) ? '/' : '/' + encodeURIComponent(page);
-        history.pushState({ page: page }, '', slug);
-    } catch (e) {
-        // ignore
-    }
-}
-
-// Create a URL-friendly slug from a product/page title
-function slugifyTitle(title) {
-    if (!title) return '';
-    return title.toString().trim().toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w\-\u0600-\u06FF]+/g, '')
-        .replace(/--+/g, '-')
-        .replace(/(^-|-$)/g, '');
-}
-
-function pushPageForTitle(title) {
-    try {
-        const slug = slugifyTitle(title) || 'page';
-        history.pushState({ page: slug, title: title }, '', '/' + slug);
-    } catch (e) { }
-}
-
-// Restore UI for a given history state without pushing a new state
-function goToPage(page) {
-    try {
-        const cardsContainer = document.querySelector('.cards-container');
-        const productCard = document.getElementById('productCard');
-        const productCard2 = document.getElementById('productCard2');
-        const customCard = document.getElementById('customCard');
-        const orderDetails = document.getElementById('orderDetails');
-        const customProductPage = document.getElementById('customProductPage');
-        const previewPage = document.getElementById('customizationPreviewPage');
-
-        // Collapse everything first
-        if (orderDetails) { orderDetails.style.display = 'none'; orderDetails.style.opacity = '0'; }
-        if (customProductPage) { customProductPage.style.display = 'none'; customProductPage.style.opacity = '0'; }
-        if (previewPage) { previewPage.style.display = 'none'; previewPage.style.opacity = '0'; previewPage.style.pointerEvents = 'none'; }
-
-        // Map product-title slugs to the correct pages
-        const prod1Slug = slugifyTitle('R6 Precision Hoodie');
-        const prod2Slug = slugifyTitle('Eldian Empire Hoodie');
-        const createSlug = slugifyTitle('Create Your Style');
-
-        if (page === prod1Slug) {
-            setActiveProduct('prod1');
-            if (cardsContainer) cardsContainer.style.display = 'none';
-            if (productCard) productCard.style.display = 'none';
-            if (orderDetails) { orderDetails.style.display = 'flex'; setTimeout(() => orderDetails.style.opacity = '1', 50); }
-            setBackButtonVisible(true);
-            hideGreeting();
-            return;
-        }
-
-        if (page === prod2Slug) {
-            setActiveProduct('prod2');
-            if (cardsContainer) cardsContainer.style.display = 'none';
-            if (productCard2) productCard2.style.display = 'none';
-            if (orderDetails) { orderDetails.style.display = 'flex'; setTimeout(() => orderDetails.style.opacity = '1', 50); }
-            setBackButtonVisible(true);
-            hideGreeting();
-            return;
-        }
-
-        if (page === createSlug) {
-            if (cardsContainer) cardsContainer.style.display = 'none';
-            if (customCard) customCard.style.display = 'none';
-            if (customProductPage) { customProductPage.style.display = 'flex'; setTimeout(() => customProductPage.style.opacity = '1', 50); }
-            setBackButtonVisible(true);
-            hideGreeting();
-            return;
-        }
-
-        // default / home
-        if (cardsContainer) cardsContainer.style.display = 'flex';
-        if (productCard) productCard.style.display = 'block';
-        if (productCard2) productCard2.style.display = 'block';
-        if (customCard) customCard.style.display = 'block';
-        setBackButtonVisible(false);
-        showGreeting();
-    } catch (e) { console.warn('goToPage failed', e); }
-}
-
-// Handle browser back/forward
-window.addEventListener('popstate', function (ev) {
-    try {
-        const st = ev.state && ev.state.page ? ev.state.page : 'home';
-        goToPage(st);
-    } catch (e) { }
-});
 
 // Function to initialize default selections for customization
 function initCustomizationDefaults() {
@@ -1308,15 +1289,15 @@ function setupEventListeners() {
                     setTimeout(() => orderDetails.style.opacity = '1', 50);
                 }
                 setBackButtonVisible(true);
-                try {
-                    const title = (document.getElementById('detailProductName') || {}).textContent || 'R6 Precision Hoodie';
-                    pushPageForTitle(title);
-                } catch (e) {}
                 const greeting = document.querySelector('.site-greeting');
                 if (greeting) {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
+                try {
+                    const path = buildFullPath(PAGE_SLUGS.prod1);
+                    history.pushState({ page: PAGE_SLUGS.prod1 }, '', path);
+                } catch (e) { }
             } catch (err) {
                 console.error('Error opening product details', err);
             }
@@ -1332,10 +1313,6 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
-                try {
-                    const title = (document.getElementById('detailProductName') || {}).textContent || 'R6 Precision Hoodie';
-                    pushPageForTitle(title);
-                } catch (e) {}
             };
         }
     }
@@ -1353,15 +1330,15 @@ function setupEventListeners() {
                     setTimeout(() => orderDetails.style.opacity = '1', 50);
                 }
                 setBackButtonVisible(true);
-                try {
-                    const title = (document.getElementById('detailProductName') || {}).textContent || 'Eldian Empire Hoodie';
-                    pushPageForTitle(title);
-                } catch (e) {}
                 const greeting = document.querySelector('.site-greeting');
                 if (greeting) {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
+                try {
+                    const path = buildFullPath(PAGE_SLUGS.prod2);
+                    history.pushState({ page: PAGE_SLUGS.prod2 }, '', path);
+                } catch (e) { }
             } catch (err) {
                 console.error('Error opening product details', err);
             }
@@ -1377,10 +1354,6 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
-                try {
-                    const title = (document.getElementById('detailProductName') || {}).textContent || 'Eldian Empire Hoodie';
-                    pushPageForTitle(title);
-                } catch (e) {}
             };
         }
     }
@@ -1397,12 +1370,15 @@ function setupEventListeners() {
                     setTimeout(() => customProductPage.style.opacity = '1', 50);
                 }
                 setBackButtonVisible(true);
-                try { pushPageForTitle('Create Your Style'); } catch (e) {}
                 const greeting = document.querySelector('.site-greeting');
                 if (greeting) {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
+                try {
+                    const path = buildFullPath(PAGE_SLUGS.create);
+                    history.pushState({ page: PAGE_SLUGS.create }, '', path);
+                } catch (e) { }
             } catch (err) {
                 console.error('Error opening custom product', err);
             }
@@ -1418,7 +1394,6 @@ function setupEventListeners() {
                     greeting.classList.remove('visible');
                     document.body.classList.remove('show-greeting');
                 }
-                try { pushPageForTitle('Create Your Style'); } catch (e) {}
             };
         }
     }
@@ -1694,7 +1669,6 @@ function setupEventListeners() {
                             setBackButtonVisible(true);
                             setTimeout(() => {
                                 customProductPage.style.opacity = '1';
-                                try { pushPageForTitle('Create Your Style'); } catch (e) {}
                             }, 10);
                         }
                         // Restore any color elements hidden when entering preview
@@ -1728,7 +1702,6 @@ function setupEventListeners() {
                         if (cardsContainer) cardsContainer.style.display = 'flex';
                         setBackButtonVisible(false);
                         showGreeting();
-                        try { updateBrowserPath('home'); } catch (e) {}
                     }, 300);
                 }
                 // If order details page is showing, go back to product card
@@ -1753,7 +1726,6 @@ function setupEventListeners() {
                         if (cardsContainer) cardsContainer.style.display = 'flex';
                         setBackButtonVisible(false);
                         showGreeting();
-                        try { updateBrowserPath('home'); } catch (e) {}
                     }, 300);
                 }
                 // Otherwise go back to cards
@@ -1764,7 +1736,6 @@ function setupEventListeners() {
                     if (cardsContainer) cardsContainer.style.display = 'flex';
                     setBackButtonVisible(false);
                     showGreeting();
-                    try { updateBrowserPath('home'); } catch (e) {}
                 }
                 
                 // Hide back button when returning to cards
