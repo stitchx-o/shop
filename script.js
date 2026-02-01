@@ -289,6 +289,13 @@ function setActiveProduct(productId) {
         nameEl.textContent = (cfg && cfg.name) ? cfg.name : (productId === 'prod2' ? 'Eldian Empire Hoodie' : 'R6 Precision Hoodie');
     }
 
+    // Immediately clear current gallery images and render a small transparent placeholder
+    // while we asynchronously load the real images to avoid flashing the previous product image.
+    productImages = [];
+    productGalleryIndex = 0;
+    detailGalleryIndex = 0;
+    setupGallery('productDetailGalleryInner', 'detailPrev', 'detailNext', 'detail');
+
     // Load actual images for this product folder and update gallery when ready
     if (cfg && cfg.folder) {
         loadImagesForFolder(cfg.folder, 4).then(imgs => {
@@ -327,7 +334,17 @@ function setupGallery(innerId, prevId, nextId, which) {
     const nextBtn = document.getElementById(nextId);
     if (!inner) return;
 
-    if (!productImages || productImages.length === 0) productImages = ['image.jpg'];
+    if (!productImages || productImages.length === 0) {
+        // show a tiny transparent placeholder instead of requesting a missing file
+        inner.innerHTML = '';
+        const placeholder = document.createElement('img');
+        placeholder.src = 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        inner.appendChild(placeholder);
+        // No navigation when there are no images
+        if (prevBtn) prevBtn.onclick = null;
+        if (nextBtn) nextBtn.onclick = null;
+        return;
+    }
 
     const idx = (which === 'card') ? productGalleryIndex : detailGalleryIndex;
     inner.innerHTML = '';
@@ -343,6 +360,8 @@ function setupGallery(innerId, prevId, nextId, which) {
         
         const currentImg = inner.querySelector('img');
         const currentIndex = (which === 'card') ? productGalleryIndex : detailGalleryIndex;
+        // guard against empty arrays (shouldn't happen here)
+        if (!productImages || productImages.length === 0) { isAnimating = false; return; }
         let nextIndex = (currentIndex + dir + productImages.length) % productImages.length;
 
         const nextImg = document.createElement('img');
