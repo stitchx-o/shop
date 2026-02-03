@@ -3,8 +3,8 @@ const statesList = [];
 const communesData = {};
 const deliveryData = {};
 
-let stateInput, communeInput, communeGroup, qtyInput, delInput, couponInput, sizeOpts, colorOpts, officeInput, officeGroup, backBtn, selectedSize = '';
-let customStateInput, customCommuneInput, customCommuneGroup, customDelInput, customOfficeInput, customOfficeGroup, customQtyInput, customCouponInput;
+let stateInput, communeInput, communeGroup, qtyInput, delInput, sizeOpts, colorOpts, officeInput, officeGroup, backBtn, selectedSize = '';
+let customStateInput, customCommuneInput, customCommuneGroup, customDelInput, customOfficeInput, customOfficeGroup, customQtyInput;
 let selectedColor = '';
 const CM_PER_PX = 0.185;
 const DESIGN_SIZE_OFFSET_CM = 9;
@@ -103,7 +103,7 @@ function initializeApp() {
     communeGroup = document.getElementById('communeGroup');
     qtyInput = document.getElementById('quantity');
     delInput = document.getElementById('deliveryType');
-    couponInput = document.getElementById('couponCode');
+    // coupon input removed from UI
     officeInput = document.getElementById('office');
     officeGroup = document.getElementById('officeGroup');
 
@@ -114,7 +114,7 @@ function initializeApp() {
     customOfficeInput = document.getElementById('customOffice');
     customOfficeGroup = document.getElementById('customOfficeGroup');
     customQtyInput = document.getElementById('customQuantity');
-    customCouponInput = document.getElementById('customCouponCode');
+    // custom coupon input removed from UI
     sizeOpts = document.querySelectorAll('.size-option');
     colorOpts = document.querySelectorAll('.color-option');
 
@@ -240,21 +240,21 @@ function loadImagesForFolder(folder, maxCount = 4) {
 
 // Product configuration: display name and available colors (lowercase keys)
 const PRODUCT_CONFIG = {
-    prod1: { name: 'R6 Precision Hoodie', colors: ['black','white','gray'], folder: 'prod1', price: 3800, oldPrice: 4800 },
-    prod2: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod2', price: 3800, oldPrice: 4800 },
-    prod3: { name: 'Skull Hoodie', colors: ['black','white','gray'], folder: 'prod3', price: 3800, oldPrice: 4800 },
-    prod4: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod4', price: 3800, oldPrice: 4800 },
-    prod5: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod5', price: 3800, oldPrice: 4800 },
-    prod6: { name: 'F40 Hoodie', colors: ['black'], folder: 'prod6', price: 3800, oldPrice: 4800 },
-    prod7: { name: 'GT3RS Hoodie', colors: ['black'], folder: 'prod7', price: 3800, oldPrice: 4800 },
-    prod8: { name: 'M2C Hoodie', colors: ['black'], folder: 'prod8', price: 3800, oldPrice: 4800 },
-    prod9: { name: 'Corleone Hoodie', colors: ['black'], folder: 'prod9', price: 3800, oldPrice: 4800 },
-    prod10: { name: 'Euphoria Hoodie', colors: ['black'], folder: 'prod10', price: 3800, oldPrice: 4800 },
-    prod11: { name: 'Guts Tshirt Oversize', colors: ['black','white'], folder: 'prod11', price: 3400, oldPrice: 4400 },
-    prod12: { name: 'Ichigo Tshirt Oversize', colors: ['black'], folder: 'prod12', price: 3400, oldPrice: 4400 },
-    prod13: { name: 'Yuji Tshirt Oversize', colors: ['black','white'], folder: 'prod13', price: 3400, oldPrice: 4400 },
-    prod14: { name: 'Prelude Tshirt Oversize', colors: ['black','white'], folder: 'prod14', price: 3400, oldPrice: 4400 },
-    prod15: { name: 'AinoOri Tshirt Oversize', colors: ['black','white'], folder: 'prod15', price: 3400, oldPrice: 4400 }
+    prod1: { name: 'R6 Precision Hoodie', colors: ['black','white','gray'], folder: 'prod1', price: 2900, oldPrice: 3900 },
+    prod2: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod2', price: 2900, oldPrice: 3900 },
+    prod3: { name: 'Skull Hoodie', colors: ['black','white','gray'], folder: 'prod3', price: 2900, oldPrice: 3900 },
+    prod4: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod4', price: 2900, oldPrice: 3900 },
+    prod5: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod5', price: 2900, oldPrice: 3900 },
+    prod6: { name: 'F40 Hoodie', colors: ['black'], folder: 'prod6', price: 2900, oldPrice: 3900 },
+    prod7: { name: 'GT3RS Hoodie', colors: ['black'], folder: 'prod7', price: 2900, oldPrice: 3900 },
+    prod8: { name: 'M2C Hoodie', colors: ['black'], folder: 'prod8', price: 2900, oldPrice: 3900 },
+    prod9: { name: 'Corleone Hoodie', colors: ['black'], folder: 'prod9', price: 2900, oldPrice: 3900 },
+    prod10: { name: 'Euphoria Hoodie', colors: ['black'], folder: 'prod10', price: 2900, oldPrice: 3900 },
+    prod11: { name: 'Guts Tshirt Oversize', colors: ['black','white'], folder: 'prod11', price: 2600, oldPrice: 3300 },
+    prod12: { name: 'Ichigo Tshirt Oversize', colors: ['black'], folder: 'prod12', price: 2600, oldPrice: 3300 },
+    prod13: { name: 'Yuji Tshirt Oversize', colors: ['black','white'], folder: 'prod13', price: 2600, oldPrice: 3300 },
+    prod14: { name: 'Prelude Tshirt Oversize', colors: ['black','white'], folder: 'prod14', price: 2600, oldPrice: 3300 },
+    prod15: { name: 'AinoOri Tshirt Oversize', colors: ['black','white'], folder: 'prod15', price: 2600, oldPrice: 3300 }
 };
 
 function setOrderColorsForProduct(productId) {
@@ -288,6 +288,19 @@ function setActiveProduct(productId) {
     if (nameEl) {
         nameEl.textContent = (cfg && cfg.name) ? cfg.name : (productId === 'prod2' ? 'Eldian Empire Hoodie' : 'R6 Precision Hoodie');
     }
+
+    // Update detail page price display (old/new) to match product config
+    try {
+        const detailOld = document.querySelector('#orderDetails .price-section .old-price');
+        const detailNew = document.querySelector('#orderDetails .price-section .new-price');
+        if (cfg) {
+            if (detailOld && typeof cfg.oldPrice !== 'undefined') detailOld.textContent = cfg.oldPrice + ' DZD';
+            if (detailNew && typeof cfg.price !== 'undefined') detailNew.textContent = cfg.price + ' DZD';
+        } else {
+            if (detailOld) detailOld.textContent = '';
+            if (detailNew) detailNew.textContent = '';
+        }
+    } catch (e) { /* ignore DOM errors */ }
 
     // Immediately clear current gallery images and render a small transparent placeholder
     // while we asynchronously load the real images to avoid flashing the previous product image.
@@ -757,15 +770,15 @@ function showCustomizationPage(imagePath) {
         try {
             const customNewPriceEl = document.querySelector('#customizationPreviewPage .new-price');
             const customFinalPriceEl = document.getElementById('customFinalPrice');
-            let baseCustomPrice = 2900; // default Regular Hoodie
+            let baseCustomPrice = 2500; // default Regular Hoodie (updated)
             try {
                 const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
                 const pname = (cd.productName || '').toLowerCase();
                 if (pname && (/tshirt/.test(pname) || /oversize/.test(pname))) {
-                    baseCustomPrice = 2600;
+                    baseCustomPrice = 2200;
                 } else if (pname && pname.indexOf('regular') === -1 && /hoodie/.test(pname)) {
                     // keep default 2700 for hoodies
-                    baseCustomPrice = 2900;
+                    baseCustomPrice = 2500;
                 }
             } catch (e) { /* ignore parse errors */ }
             if (customNewPriceEl) customNewPriceEl.textContent = baseCustomPrice + ' DZD';
@@ -813,8 +826,11 @@ function initDesignEditor() {
     let startAngle = 0;
     const updateDesignSizeDisplay = () => {
         if (!designLayer || !designSizeValue || designLayer.style.display === 'none') return;
-        const wCm = Math.max(0, Math.round(designLayer.offsetWidth * CM_PER_PX) + DESIGN_SIZE_OFFSET_CM);
-        const hCm = Math.max(0, Math.round(designLayer.offsetHeight * CM_PER_PX) + DESIGN_SIZE_OFFSET_CM);
+        // On the edit page, reduce reported dimensions: width -6cm, height -9cm
+        const rawW = Math.round(designLayer.offsetWidth * CM_PER_PX) + DESIGN_SIZE_OFFSET_CM;
+        const rawH = Math.round(designLayer.offsetHeight * CM_PER_PX) + DESIGN_SIZE_OFFSET_CM;
+        const wCm = Math.max(0, rawW - 6);
+        const hCm = Math.max(0, rawH - 9);
         designSizeValue.textContent = `${wCm} × ${hCm} cm`;
         calculateCustom();
     };
@@ -1452,8 +1468,7 @@ function setupEventListeners() {
     const customFullNameInput = document.getElementById('customFullName');
     const phoneInput = document.getElementById('phone');
     const customPhoneInput = document.getElementById('customPhone');
-    const couponInputEl = document.getElementById('couponCode');
-    const customCouponInputEl = document.getElementById('customCouponCode');
+    // coupon inputs removed from DOM
     
     // Attach click handlers to all product cards that have a data-product-id
     const productCards = document.querySelectorAll('.product-card-section[data-product-id]');
@@ -1463,6 +1478,8 @@ function setupEventListeners() {
             card.onclick = () => {
                 try {
                     setActiveProduct(pid);
+                    // Ensure displayed total is recalculated when opening details
+                    try { calculate(); } catch (e) { /* ignore if calculate not ready */ }
                     const cardsContainer = document.querySelector('.cards-container');
                     if (cardsContainer) cardsContainer.style.display = 'none';
                     // hide all cards to match previous behavior
@@ -1522,7 +1539,6 @@ function setupEventListeners() {
     }
 
     const sanitizeNameInput = (value) => value.replace(/[^A-Za-z ]+/g, '');
-    const sanitizeCouponInput = (value) => value.replace(/[^A-Za-z]+/g, '');
     const sanitizePhoneInput = (value) => value.replace(/\D+/g, '').slice(0, 10);
 
     if (fullNameInput) {
@@ -1535,16 +1551,7 @@ function setupEventListeners() {
             customFullNameInput.value = sanitizeNameInput(customFullNameInput.value);
         });
     }
-    if (couponInputEl) {
-        couponInputEl.addEventListener('input', () => {
-            couponInputEl.value = sanitizeCouponInput(couponInputEl.value);
-        });
-    }
-    if (customCouponInputEl) {
-        customCouponInputEl.addEventListener('input', () => {
-            customCouponInputEl.value = sanitizeCouponInput(customCouponInputEl.value);
-        });
-    }
+    // coupon inputs removed; no sanitizers or listeners required
     if (phoneInput) {
         phoneInput.addEventListener('input', () => {
             phoneInput.value = sanitizePhoneInput(phoneInput.value);
@@ -1688,11 +1695,11 @@ function setupEventListeners() {
         };
     }
     
-    [qtyInput, delInput, couponInput].forEach(el => {
+    [qtyInput, delInput].forEach(el => {
         if (el) el.oninput = calculate;
     });
 
-    [customQtyInput, customDelInput, customCouponInput].forEach(el => {
+    [customQtyInput, customDelInput].forEach(el => {
         if (el) el.oninput = calculateCustom;
     });
 
@@ -2019,7 +2026,6 @@ function calculate() {
     const qty = parseInt(qtyInput.value) || 1;
     const state = stateInput.value;
     const type = delInput.value;
-    const coupon = couponInput.value.trim().toLowerCase();
     
     // Use product-specific base price if available
     let basePrice = 3700;
@@ -2036,13 +2042,6 @@ function calculate() {
         document.getElementById('bulkDiscountMsg').style.display = 'none';
     }
 
-    if(coupon === 'stitchx') {
-        productPrice -= 200;
-        document.getElementById('couponDiscountMsg').style.display = 'block';
-    } else {
-        document.getElementById('couponDiscountMsg').style.display = 'none';
-    }
-
     let delPrice = 0;
     if (state && type) {
         delPrice = getDeliveryForWilaya(state, type);
@@ -2055,20 +2054,19 @@ function calculate() {
 }
 
 function calculateCustom() {
-    if (!customQtyInput || !customStateInput || !customDelInput || !customCouponInput) return;
+    if (!customQtyInput || !customStateInput || !customDelInput) return;
     const qty = parseInt(customQtyInput.value) || 1;
     const state = customStateInput.value;
     const type = customDelInput.value;
-    const coupon = customCouponInput.value.trim().toLowerCase();
 
     // Determine base price for customization: per selected custom product
     // default to Regular Hoodie price in create-your-style until selection overrides
-    let baseCustomPrice = 2900;
+    let baseCustomPrice = 2500;
     try {
         const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
         const pname = (cd.productName || '').trim();
-        if (pname === 'Regular Hoodie') baseCustomPrice = 2900;
-        else if (/tshirt/i.test(pname) || /oversize/i.test(pname)) baseCustomPrice = 2600;
+        if (pname === 'Regular Hoodie') baseCustomPrice = 2500;
+        else if (/tshirt/i.test(pname) || /oversize/i.test(pname)) baseCustomPrice = 2200;
     } catch (e) { /* ignore parse errors */ }
     let productPrice = qty * baseCustomPrice;
 
@@ -2101,7 +2099,7 @@ function calculateCustom() {
     productPrice += (designExtra * qty);
 
     const bulkMsg = document.getElementById('customBulkDiscountMsg');
-    const couponMsg = document.getElementById('customCouponDiscountMsg');
+    const couponMsg = null;
 
     if (qty >= 2) {
         productPrice -= 500;
@@ -2109,13 +2107,7 @@ function calculateCustom() {
     } else if (bulkMsg) {
         bulkMsg.style.display = 'none';
     }
-
-    if (coupon === 'stitchx') {
-        productPrice -= 200;
-        if (couponMsg) couponMsg.style.display = 'block';
-    } else if (couponMsg) {
-        couponMsg.style.display = 'none';
-    }
+    // coupon removed: no coupon discounts applied
 
     let delPrice = 0;
     if (state && type) {
@@ -2153,7 +2145,6 @@ function handleConfirmOrder() {
     if (!validateCommonFields({
         name,
         phone,
-        coupon: couponInput.value.trim(),
         size: selectedSize
     }, err)) {
         return;
@@ -2208,7 +2199,7 @@ function handleConfirmOrder() {
 }
 
 function handleConfirmCustomOrder() {
-    if (!customQtyInput || !customStateInput || !customDelInput || !customCouponInput) return;
+    if (!customQtyInput || !customStateInput || !customDelInput) return;
 
     const nameEl = document.getElementById('customFullName');
     const phoneEl = document.getElementById('customPhone');
@@ -2224,7 +2215,6 @@ function handleConfirmCustomOrder() {
     if (!validateCommonFields({
         name,
         phone,
-        coupon: customCouponInput.value.trim(),
         size: selectedSize
     }, err)) {
         return;
