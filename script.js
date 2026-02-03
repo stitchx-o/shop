@@ -60,7 +60,8 @@ function normalizeName(str) {
 // Load data and initialize when DOM is ready
 function initializeApp() {
     // Shuffle product cards inside each section (Anime/Automotive/Vibes/Custom)
-    try { shuffleSectionProducts(); } catch (e) { /* ignore shuffle errors */ }
+    // shuffleSectionProducts removed to keep product ordering stable on reload
+    // (previously: try { shuffleSectionProducts(); } catch (e) { /* ignore shuffle errors */ })
         // Ensure the page is scrolled to top on initial load/refresh
         try { window.scrollTo(0, 0); } catch (e) {}
         document.body.classList.add('show-greeting');
@@ -240,21 +241,21 @@ function loadImagesForFolder(folder, maxCount = 4) {
 
 // Product configuration: display name and available colors (lowercase keys)
 const PRODUCT_CONFIG = {
-    prod1: { name: 'R6 Precision Hoodie', colors: ['black','white','gray'], folder: 'prod1', price: 2900, oldPrice: 3900 },
-    prod2: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod2', price: 2900, oldPrice: 3900 },
-    prod3: { name: 'Skull Hoodie', colors: ['black','white','gray'], folder: 'prod3', price: 2900, oldPrice: 3900 },
-    prod4: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod4', price: 2900, oldPrice: 3900 },
-    prod5: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod5', price: 2900, oldPrice: 3900 },
-    prod6: { name: 'F40 Hoodie', colors: ['black'], folder: 'prod6', price: 2900, oldPrice: 3900 },
-    prod7: { name: 'GT3RS Hoodie', colors: ['black'], folder: 'prod7', price: 2900, oldPrice: 3900 },
-    prod8: { name: 'M2C Hoodie', colors: ['black'], folder: 'prod8', price: 2900, oldPrice: 3900 },
-    prod9: { name: 'Corleone Hoodie', colors: ['black'], folder: 'prod9', price: 2900, oldPrice: 3900 },
-    prod10: { name: 'Euphoria Hoodie', colors: ['black'], folder: 'prod10', price: 2900, oldPrice: 3900 },
-    prod11: { name: 'Guts Tshirt Oversize', colors: ['black','white'], folder: 'prod11', price: 2600, oldPrice: 3300 },
-    prod12: { name: 'Ichigo Tshirt Oversize', colors: ['black'], folder: 'prod12', price: 2600, oldPrice: 3300 },
-    prod13: { name: 'Yuji Tshirt Oversize', colors: ['black','white'], folder: 'prod13', price: 2600, oldPrice: 3300 },
-    prod14: { name: 'Prelude Tshirt Oversize', colors: ['black','white'], folder: 'prod14', price: 2600, oldPrice: 3300 },
-    prod15: { name: 'AinoOri Tshirt Oversize', colors: ['black','white'], folder: 'prod15', price: 2600, oldPrice: 3300 }
+    prod1: { name: 'R6 Precision Hoodie', colors: ['black','white','gray'], folder: 'prod1', price: 3700, oldPrice: 4700 },
+    prod2: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod2', price: 3700, oldPrice: 4700 },
+    prod3: { name: 'Skull Hoodie', colors: ['black','white','gray'], folder: 'prod3', price: 3700, oldPrice: 4700 },
+    prod4: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod4', price: 3700, oldPrice: 4700 },
+    prod5: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod5', price: 3700, oldPrice: 4700 },
+    prod6: { name: 'F40 Hoodie', colors: ['black'], folder: 'prod6', price: 3700, oldPrice: 4700 },
+    prod7: { name: 'GT3RS Hoodie', colors: ['black'], folder: 'prod7', price: 3700, oldPrice: 4700 },
+    prod8: { name: 'M2C Hoodie', colors: ['black'], folder: 'prod8', price: 3700, oldPrice: 4700 },
+    prod9: { name: 'Corleone Hoodie', colors: ['black'], folder: 'prod9', price: 3700, oldPrice: 4700 },
+    prod10: { name: 'Euphoria Hoodie', colors: ['black'], folder: 'prod10', price: 3700, oldPrice: 4700 },
+    prod11: { name: 'Guts Tshirt Oversize', colors: ['black','white'], folder: 'prod11', price: 3200, oldPrice: 4200 },
+    prod12: { name: 'Ichigo Tshirt Oversize', colors: ['black'], folder: 'prod12', price: 3200, oldPrice: 4200 },
+    prod13: { name: 'Yuji Tshirt Oversize', colors: ['black','white'], folder: 'prod13', price: 3200, oldPrice: 4200 },
+    prod14: { name: 'Prelude Tshirt Oversize', colors: ['black','white'], folder: 'prod14', price: 3200, oldPrice: 4200 },
+    prod15: { name: 'AinoOri Tshirt Oversize', colors: ['black','white'], folder: 'prod15', price: 3200, oldPrice: 4200 }
 };
 
 function setOrderColorsForProduct(productId) {
@@ -770,15 +771,14 @@ function showCustomizationPage(imagePath) {
         try {
             const customNewPriceEl = document.querySelector('#customizationPreviewPage .new-price');
             const customFinalPriceEl = document.getElementById('customFinalPrice');
-            let baseCustomPrice = 2500; // default Regular Hoodie (updated)
+            let baseCustomPrice = 2800; // default Regular Hoodie
             try {
                 const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
                 const pname = (cd.productName || '').toLowerCase();
                 if (pname && (/tshirt/.test(pname) || /oversize/.test(pname))) {
-                    baseCustomPrice = 2200;
+                    baseCustomPrice = 2400;
                 } else if (pname && pname.indexOf('regular') === -1 && /hoodie/.test(pname)) {
-                    // keep default 2700 for hoodies
-                    baseCustomPrice = 2500;
+                    baseCustomPrice = 2800;
                 }
             } catch (e) { /* ignore parse errors */ }
             if (customNewPriceEl) customNewPriceEl.textContent = baseCustomPrice + ' DZD';
@@ -2060,13 +2060,13 @@ function calculateCustom() {
     const type = customDelInput.value;
 
     // Determine base price for customization: per selected custom product
-    // default to Regular Hoodie price in create-your-style until selection overrides
-    let baseCustomPrice = 2500;
+    // default to Regular Hoodie price (2800) unless user selected a tshirt oversize (2400)
+    let baseCustomPrice = 2800;
     try {
         const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
         const pname = (cd.productName || '').trim();
-        if (pname === 'Regular Hoodie') baseCustomPrice = 2500;
-        else if (/tshirt/i.test(pname) || /oversize/i.test(pname)) baseCustomPrice = 2200;
+        if (pname === 'Regular Hoodie') baseCustomPrice = 2800;
+        else if (/tshirt/i.test(pname) || /oversize/i.test(pname)) baseCustomPrice = 2400;
     } catch (e) { /* ignore parse errors */ }
     let productPrice = qty * baseCustomPrice;
 
@@ -2182,9 +2182,11 @@ function handleConfirmOrder() {
     formData.append('deliveryDestination', deliveryType === 'home' ? commune : office);
     formData.append('size', selectedSize);
     formData.append('color', selectedColor);
+    // Ensure quantity is sent to Google Apps Script
+    try { formData.append('quantity', (qtyInput && qtyInput.value) ? qtyInput.value : (document.getElementById('quantity') ? document.getElementById('quantity').value : '1')); } catch (e) { formData.append('quantity', '1'); }
     formData.append('finalPrice', finalPrice);
 
-    fetch('https://script.google.com/macros/s/AKfycbyWDAKWTJZCzzsBp4Q0nR79eaRyvId-OBKabJv-GDL1WuzQy1fY3xi0bnPowJ5ayGRsKw/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbyG1VwVaNVb1SeOWqdJNGiQBPSWr9sI7ki42tS9xeGIgaZzyXlBlFcbViHbv6xlO-omsA/exec', {
         method: 'POST',
         body: formData
     })
@@ -2260,7 +2262,7 @@ function handleConfirmCustomOrder() {
 
     // إرسال البيانات النصية فقط مباشرة إلى Google Apps Script باستخدام FormData
     try {
-        const gasUrl = 'https://script.google.com/macros/s/AKfycbyWDAKWTJZCzzsBp4Q0nR79eaRyvId-OBKabJv-GDL1WuzQy1fY3xi0bnPowJ5ayGRsKw/exec';
+        const gasUrl = 'https://script.google.com/macros/s/AKfycbyG1VwVaNVb1SeOWqdJNGiQBPSWr9sI7ki42tS9xeGIgaZzyXlBlFcbViHbv6xlO-omsA/exec';
         // Prefer the product name stored in sessionStorage (set when user clicked Customize),
         // fall back to known DOM elements, otherwise default to 'Regular Hoodie'.
         let prodName = 'Regular Hoodie';
@@ -2285,6 +2287,8 @@ function handleConfirmCustomOrder() {
         formData.append('deliveryDestination', deliveryType === 'home' ? commune : office);
         formData.append('size', selectedSize);
         formData.append('color', selectedCustomColor);
+        // Ensure custom quantity is sent to Google Apps Script
+        try { formData.append('quantity', (customQtyInput && customQtyInput.value) ? customQtyInput.value : (document.getElementById('customQuantity') ? document.getElementById('customQuantity').value : '1')); } catch (e) { formData.append('quantity', '1'); }
         formData.append('finalPrice', finalPrice);
 
         fetch(gasUrl, {
