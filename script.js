@@ -177,7 +177,11 @@ function shuffleSectionProducts() {
 function initGallery() {
     productImages = window.__productImages || [];
     product1Images = productImages;
-    // Load actual existing images for prod1 folder if available
+    // Render gallery immediately with fallback images (if any) for faster perceived load
+    setupGallery('productGalleryInner', 'productPrev', 'productNext', 'card');
+    setupGallery('productDetailGalleryInner', 'detailPrev', 'detailNext', 'detail');
+
+    // Load actual existing images for prod1 folder in background and refresh gallery when ready
     const prod1Folder = (PRODUCT_CONFIG.prod1 && PRODUCT_CONFIG.prod1.folder) ? PRODUCT_CONFIG.prod1.folder : 'prod1';
     loadImagesForFolder(prod1Folder, 4).then(imgs => {
         if (imgs && imgs.length > 0) {
@@ -187,10 +191,12 @@ function initGallery() {
             productImages = ['image.jpg'];
             product1Images = productImages;
         }
+        // refresh galleries with discovered images
         setupGallery('productGalleryInner', 'productPrev', 'productNext', 'card');
         setupGallery('productDetailGalleryInner', 'detailPrev', 'detailNext', 'detail');
     }).catch(err => {
         console.warn('Failed to load prod1 images', err);
+        // ensure galleries still rendered
         setupGallery('productGalleryInner', 'productPrev', 'productNext', 'card');
         setupGallery('productDetailGalleryInner', 'detailPrev', 'detailNext', 'detail');
     });
@@ -198,44 +204,54 @@ function initGallery() {
 
 // Try to detect existing image files in a product folder by preloading common extensions.
 function loadImagesForFolder(folder, maxCount = 4) {
-    // Prefer common raster types; exclude .webp to avoid extra 404s on servers without webp copies
+    // Probe common raster types in parallel and return up to `maxCount` existing images.
     const exts = ['.jpg', '.jpeg', '.png'];
     const base = `images/${folder}`;
 
     return new Promise((resolve) => {
-        const results = [];
-        let idx = 1;
+        const found = {};
+        let pending = 0;
+        const overallTimeout = 900; // ms - keep small for snappy UI
+        const start = Date.now();
 
-        function tryIndex(i) {
-            if (i > maxCount) return resolve(results);
-            // Try each extension sequentially for this index
-            let tried = 0;
-            let foundForIndex = false;
-
-            function tryExt(extsList) {
-                if (extsList.length === 0) {
-                    // none found for this index -> stop assuming sequence ended
-                    return resolve(results);
-                }
-                const ext = extsList[0];
-                const url = `${base}/image${i}${ext}`;
-                const img = new Image();
-                img.onload = () => {
-                    results.push(url);
-                    foundForIndex = true;
-                    tryIndex(i + 1);
-                };
-                img.onerror = () => {
-                    tryExt(extsList.slice(1));
-                };
-                // start loading
-                img.src = url;
-            }
-
-            tryExt(exts);
+        function checkDone() {
+            // Collect results in numeric order
+            const keys = Object.keys(found).map(k => parseInt(k, 10)).sort((a,b) => a-b);
+            const results = keys.map(i => found[i]).slice(0, maxCount);
+            resolve(results);
         }
 
-        tryIndex(1);
+        for (let i = 1; i <= maxCount; i++) {
+            for (const ext of exts) {
+                const url = `${base}/image${i}${ext}`;
+                pending++;
+                const img = new Image();
+                let finished = false;
+                img.onload = function() {
+                    if (finished) return;
+                    finished = true;
+                    // record the first successful ext for this index
+                    if (!found[i]) found[i] = url;
+                    pending--;
+                    // If we've found images for all indexes or none pending, finish early
+                    if (Object.keys(found).length >= maxCount || pending === 0) checkDone();
+                };
+                img.onerror = function() {
+                    if (finished) return;
+                    finished = true;
+                    pending--;
+                    if (pending === 0) checkDone();
+                };
+                // Start loading; use small cache-busting when debugging removed
+                img.src = url;
+            }
+        }
+
+        // Safety overall timeout to avoid long blocking probes
+        setTimeout(() => {
+            try { if (pending > 0) { /* ignore remaining errors, resolve with found */ } } catch(e) {}
+            checkDone();
+        }, overallTimeout);
     });
 }
 
@@ -363,6 +379,8 @@ function setupGallery(innerId, prevId, nextId, which) {
     const idx = (which === 'card') ? productGalleryIndex : detailGalleryIndex;
     inner.innerHTML = '';
     const img = document.createElement('img');
+    img.loading = 'lazy';
+    img.decoding = 'async';
     img.src = encodeURI(productImages[idx]);
     inner.appendChild(img);
 
@@ -379,6 +397,8 @@ function setupGallery(innerId, prevId, nextId, which) {
         let nextIndex = (currentIndex + dir + productImages.length) % productImages.length;
 
         const nextImg = document.createElement('img');
+        nextImg.loading = 'lazy';
+        nextImg.decoding = 'async';
         nextImg.src = encodeURI(productImages[nextIndex]);
         nextImg.style.transform = 'translateX(' + (dir > 0 ? '100%' : '-100%') + ')';
         inner.appendChild(nextImg);
