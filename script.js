@@ -119,6 +119,28 @@ function initializeApp() {
     sizeOpts = document.querySelectorAll('.size-option');
     colorOpts = document.querySelectorAll('.color-option');
 
+    // Enforce maximum quantity of 5 for both normal and custom orders
+    try {
+        if (qtyInput) {
+            qtyInput.max = 5;
+            qtyInput.addEventListener('input', () => {
+                let v = parseInt(qtyInput.value || '0', 10) || 0;
+                if (v > 5) qtyInput.value = 5;
+                if (v < 1) qtyInput.value = 1;
+                calculate();
+            });
+        }
+        if (customQtyInput) {
+            customQtyInput.max = 5;
+            customQtyInput.addEventListener('input', () => {
+                let v = parseInt(customQtyInput.value || '0', 10) || 0;
+                if (v > 5) customQtyInput.value = 5;
+                if (v < 1) customQtyInput.value = 1;
+                calculateCustom();
+            });
+        }
+    } catch (e) { /* ignore */ }
+
     initStates();
     initCustomStates();
     try { setupEventListeners(); } catch (e) { console.error('setupEventListeners error', e); }
@@ -257,9 +279,9 @@ function loadImagesForFolder(folder, maxCount = 4) {
 
 // Product configuration: display name and available colors (lowercase keys)
 const PRODUCT_CONFIG = {
-    prod1: { name: 'R6 Precision Hoodie', colors: ['black','white','gray'], folder: 'prod1', price: 3700, oldPrice: 4700 },
-    prod2: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod2', price: 3700, oldPrice: 4700 },
-    prod3: { name: 'Skull Hoodie', colors: ['black','white','gray'], folder: 'prod3', price: 3700, oldPrice: 4700 },
+    prod1: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod1', price: 2900, oldPrice: 3800 },
+    prod2: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod2', price: 2900, oldPrice: 3800 },
+    prod3: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod3', price: 2900, oldPrice: 3800 },
     prod4: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod4', price: 3700, oldPrice: 4700 },
     prod5: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod5', price: 3700, oldPrice: 4700 },
     prod6: { name: 'F40 Hoodie', colors: ['black'], folder: 'prod6', price: 3700, oldPrice: 4700 },
@@ -311,8 +333,8 @@ function setActiveProduct(productId) {
         const detailOld = document.querySelector('#orderDetails .price-section .old-price');
         const detailNew = document.querySelector('#orderDetails .price-section .new-price');
         if (cfg) {
-            if (detailOld && typeof cfg.oldPrice !== 'undefined') detailOld.textContent = cfg.oldPrice + ' DZD';
-            if (detailNew && typeof cfg.price !== 'undefined') detailNew.textContent = cfg.price + ' DZD';
+            if (detailOld && typeof cfg.oldPrice !== 'undefined') detailOld.textContent = cfg.oldPrice + ' دج';
+            if (detailNew && typeof cfg.price !== 'undefined') detailNew.textContent = cfg.price + ' دج';
         } else {
             if (detailOld) detailOld.textContent = '';
             if (detailNew) detailNew.textContent = '';
@@ -791,24 +813,31 @@ function showCustomizationPage(imagePath) {
         try {
             const customNewPriceEl = document.querySelector('#customizationPreviewPage .new-price');
             const customFinalPriceEl = document.getElementById('customFinalPrice');
-            let baseCustomPrice = 2800; // default Regular Hoodie
+            let baseCustomPrice = 2800; // default fallback
             try {
                 const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
                 const pname = (cd.productName || '').toLowerCase();
-                if (pname && (/tshirt/.test(pname) || /oversize/.test(pname))) {
+                // Regular Hoodie specific price
+                if (pname && /regular/.test(pname) && /hoodie/.test(pname)) {
+                    baseCustomPrice = 2600;
+                }
+                // Tshirt / Oversize
+                else if (pname && (/tshirt/.test(pname) || /oversize/.test(pname))) {
                     baseCustomPrice = 2400;
-                } else if (pname && pname.indexOf('regular') === -1 && /hoodie/.test(pname)) {
+                }
+                // Other hoodies (non-regular)
+                else if (pname && /hoodie/.test(pname)) {
                     baseCustomPrice = 2800;
                 }
             } catch (e) { /* ignore parse errors */ }
-            if (customNewPriceEl) customNewPriceEl.textContent = baseCustomPrice + ' DZD';
+            if (customNewPriceEl) customNewPriceEl.textContent = baseCustomPrice + ' دج';
             if (customFinalPriceEl) customFinalPriceEl.textContent = baseCustomPrice;
             // Set the preview title to the selected product name
             try {
                 const cd = JSON.parse(sessionStorage.getItem('customizationData') || '{}');
                 const previewTitleEl = document.querySelector('#customizationPreviewPage .product-name-above-gallery');
                 const pname = (cd.productName || '').trim();
-                if (previewTitleEl) previewTitleEl.textContent = pname || 'Create Your Style';
+                if (previewTitleEl) previewTitleEl.textContent = pname || 'صمم بنفسك';
             } catch (e) { /* ignore */ }
         } catch (e) { /* ignore */ }
     }
@@ -2148,7 +2177,7 @@ function calculateCustom() {
     // Update preview displayed price if present
     try {
         const previewNew = document.querySelector('#customizationPreviewPage .new-price');
-        if (previewNew) previewNew.textContent = finalPrice + ' DZD';
+        if (previewNew) previewNew.textContent = finalPrice + ' دج';
     } catch (e) { /* ignore */ }
 }
 
