@@ -279,9 +279,9 @@ function loadImagesForFolder(folder, maxCount = 4) {
 
 // Product configuration: display name and available colors (lowercase keys)
 const PRODUCT_CONFIG = {
-    prod1: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod1', price: 2900, oldPrice: 3800 },
-    prod2: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod2', price: 2900, oldPrice: 3800 },
-    prod3: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod3', price: 2900, oldPrice: 3800 },
+    prod1: { name: 'Eldian Empire Hoodie', colors: ['black'], folder: 'prod1', price: 3200, oldPrice: 4200 },
+    prod2: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod2', price: 3200, oldPrice: 4200 },
+    prod3: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod3', price: 3200, oldPrice: 4200 },
     prod4: { name: 'Rika Hoodie', colors: ['black'], folder: 'prod4', price: 3700, oldPrice: 4700 },
     prod5: { name: 'Shunsui Hoodie', colors: ['black'], folder: 'prod5', price: 3700, oldPrice: 4700 },
     prod6: { name: 'F40 Hoodie', colors: ['black'], folder: 'prod6', price: 3700, oldPrice: 4700 },
